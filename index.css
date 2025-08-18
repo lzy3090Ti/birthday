@@ -1,0 +1,444 @@
+/* 基础样式重置与设置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Comic Sans MS", "Marker Felt", sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom, #FFF0F5, #E6F2FF);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
+}
+
+.container {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 颜色变量定义 */
+:root {
+    --primary: #FF6B8B;
+    --secondary: #6B9FFF;
+    --accent: #FFD166;
+    --neutral: #F8F9FA;
+    --gray-light: #F0F0F0;
+    --gray: #888888;
+    --gray-dark: #666666;
+}
+
+/* 核心动画效果 */
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(0) translate(0, 0);
+        opacity: 1;
+    }
+    70% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1) translate(var(--tx), var(--ty));
+        opacity: 0;
+    }
+}
+
+/* 页面切换动画 */
+.page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 0.5s ease;
+}
+
+.page-hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 标题样式 */
+.main-title {
+    font-size: clamp(1.8rem, 8vw, 3rem);
+    font-weight: bold;
+    color: var(--primary);
+    text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    animation: pulse 4s infinite;
+}
+
+.subtitle {
+    color: var(--gray-dark);
+    text-align: center;
+    font-size: 1rem;
+    max-width: 300px;
+    margin: 0 auto 30px;
+    line-height: 1.4;
+}
+
+/* 顶部装饰条 */
+.top-bar {
+    height: 48px;
+    background: linear-gradient(to right, var(--primary), var(--accent), var(--secondary));
+    opacity: 0.7;
+    margin-bottom: 30px;
+}
+
+/* 卡片样式 */
+.card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* 波轮选择器核心样式 - 重点修复数字位置 */
+.wheel-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.wheel-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--secondary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.wheel-icon {
+    animation: float 3s ease-in-out infinite;
+    color: var(--accent);
+    font-size: 1.5rem;
+}
+
+.wheel-icon:last-child {
+    animation-delay: 0.5s;
+    color: var(--primary);
+}
+
+.wheel-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.wheel-wrapper {
+    width: 80px; /* 固定宽度确保数字不溢出 */
+    height: 210px;
+    overflow: hidden;
+    position: relative;
+    mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+}
+
+.wheel {
+    transition: transform 0.3s ease-out;
+    will-change: transform;
+}
+
+/* 修复数字位置的关键样式 */
+.wheel-item {
+    height: 56px; /* 固定高度确保对齐 */
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    font-size: 1.2rem;
+    transition: all 0.2s ease;
+    width: 100%; /* 确保占满容器宽度 */
+    position: relative;
+}
+
+/* 激活状态的数字样式 */
+.wheel-item.active {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+/* 中间高亮条 - 确保数字在此区域居中 */
+.wheel-highlight {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    height: 56px; /* 与wheel-item高度一致 */
+    background-color: rgba(107, 159, 255, 0.2);
+    border-top: 2px solid var(--secondary);
+    border-bottom: 2px solid var(--secondary);
+    pointer-events: none;
+    z-index: 1; /* 确保在数字下方 */
+}
+
+.wheel-separator {
+    font-size: 1.5rem;
+    color: var(--gray);
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 30px;
+    font-weight: bold;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #ff527a;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: var(--secondary);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a8efd;
+    transform: scale(1.05);
+}
+
+/* 祝福列表样式 */
+.wishes-list {
+    margin-bottom: 30px;
+}
+
+.list-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--primary);
+    text-align: center;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.wish-item {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.wish-item:hover {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.wish-date {
+    font-weight: bold;
+    color: var(--secondary);
+    margin-bottom: 5px;
+    font-size: 1rem;
+}
+
+.wish-text {
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* 提示样式 */
+.hint-box {
+    background-color: var(--neutral);
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.hint-title {
+    font-weight: bold;
+    color: var(--accent);
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.hint-text {
+    color: var(--gray-dark);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+/* 页脚样式 */
+.footer {
+    text-align: center;
+    color: var(--gray);
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+}
+
+/* 祝福页面样式 */
+.wish-page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.wish-content {
+    flex-grow: 1;
+    padding-top: 50px;
+    text-align: center;
+}
+
+.wish-stars {
+    margin-bottom: 20px;
+}
+
+.wish-star {
+    display: inline-block;
+    animation: float 3s ease-in-out infinite;
+}
+
+.wish-star:nth-child(1) {
+    color: var(--accent);
+    font-size: 2rem;
+}
+
+.wish-star:nth-child(2) {
+    color: var(--primary);
+    font-size: 1.5rem;
+    animation-delay: 0.2s;
+}
+
+.wish-star:nth-child(3) {
+    color: var(--secondary);
+    font-size: 1rem;
+    animation-delay: 0.4s;
+}
+
+.wish-main-title {
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 30px;
+}
+
+.wish-message-box {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.wish-message {
+    color: var(--gray-dark);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    min-height: 150px;
+}
+
+.back-btn {
+    max-width: 200px;
+    margin: 0 auto 40px;
+}
+
+.wish-footer {
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+}
+
+/* 装饰元素 */
+.decor {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(50px);
+    opacity: 0.1;
+    pointer-events: none;
+}
+
+.decor-1 {
+    bottom: -40px;
+    left: -40px;
+    width: 160px;
+    height: 160px;
+    background-color: var(--primary);
+}
+
+.decor-2 {
+    top: 150px;
+    right: -60px;
+    width: 180px;
+    height: 180px;
+    background-color: var(--secondary);
+}
+
+/* 彩屑容器 */
+#confettiContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* 响应式调整 - 确保在小屏设备上数字依然居中 */
+@media (max-width: 360px) {
+    .wheel-wrapper {
+        width: 70px;
+    }
+    
+    .wheel-item {
+        font-size: 1.1rem;
+    }
+    
+    .wheel-item.active {
+        font-size: 1.4rem;
+    }
+}
+    
