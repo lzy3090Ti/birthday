@@ -175,6 +175,7 @@ body {
     width: 100%; /* 确保占满容器宽度 */
     position: relative;
     z-index: 1; /* 确保数字位于高亮条上方 */
+    user-select: none; /* 防止滚动选择时选中数字文本 */
 }
 
 /* 激活状态的数字样式 */
