@@ -3,22 +3,26 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Comic Sans MS", "Marker Felt", sans-serif;
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", "Comic Sans MS", "Marker Felt", sans-serif;
 }
 
 body {
     background: linear-gradient(to bottom, #FFF0F5, #E6F2FF);
     min-height: 100vh;
+    min-height: 100dvh;
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent; /* 移除移动端点击高亮 */
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+    color: var(--gray-dark);
 }
 
 .container {
     max-width: 480px;
     margin: 0 auto;
     padding: 0 20px;
+    padding-left: max(20px, env(safe-area-inset-left));
+    padding-right: max(20px, env(safe-area-inset-right));
 }
 
 /* 颜色变量定义 */
@@ -31,6 +35,8 @@ body {
     --gray: #888888;
     --gray-dark: #666666;
     --focus-ring: 0 0 0 3px rgba(107, 159, 255, 0.45);
+    --shadow-soft: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 /* 核心动画效果 */
@@ -59,6 +65,17 @@ body {
     }
 }
 
+@keyframes card-enter {
+    0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.98);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 /* 页面切换动画 */
 .page {
     position: absolute;
@@ -84,6 +101,8 @@ body {
     margin-bottom: 15px;
     animation: pulse 4s infinite;
     letter-spacing: 0.02em;
+    line-height: 1.3;
+    word-break: break-word;
 }
 
 .subtitle {
@@ -107,18 +126,116 @@ body {
 .card {
     background: white;
     border-radius: 20px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-soft);
     padding: 25px;
     margin-bottom: 30px;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
 }
 
 .card:hover {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-strong);
 }
 
 .card:focus-within {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15), var(--focus-ring);
+    box-shadow: var(--shadow-strong), var(--focus-ring);
+}
+
+/* 祝福卡片：结果展示用，带入场动画与视觉层次 */
+.blessing-card {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    background: linear-gradient(160deg, #FFFFFF 0%, #FFF5F8 60%, #EFF6FF 100%);
+    border: 1px solid rgba(255, 107, 139, 0.18);
+    animation: card-enter 0.5s ease both;
+}
+
+.blessing-card::before {
+    content: "";
+    position: absolute;
+    top: -40px;
+    right: -40px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 209, 102, 0.35), transparent 70%);
+    pointer-events: none;
+}
+
+.blessing-emoji {
+    font-size: 2.4rem;
+    line-height: 1;
+    margin-bottom: 12px;
+    animation: float 3s ease-in-out infinite;
+}
+
+.blessing-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--primary);
+    margin-bottom: 10px;
+    line-height: 1.4;
+}
+
+.blessing-text {
+    font-size: 1rem;
+    color: var(--gray-dark);
+    line-height: 1.75;
+    letter-spacing: 0.01em;
+}
+
+.blessing-sign {
+    margin-top: 14px;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+/* 按钮：保证移动端触控尺寸不小于 44px */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 999px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #FFFFFF;
+    background: linear-gradient(135deg, var(--primary), #FF8FA8);
+    box-shadow: 0 6px 16px rgba(255, 107, 139, 0.35);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+}
+
+.btn:hover {
+    box-shadow: 0 8px 22px rgba(255, 107, 139, 0.45);
+}
+
+.btn:active {
+    transform: scale(0.97);
+}
+
+.btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-secondary {
+    color: var(--secondary);
+    background: #FFFFFF;
+    border: 1px solid rgba(107, 159, 255, 0.4);
+    box-shadow: 0 4px 12px rgba(107, 159, 255, 0.18);
+}
+
+.btn-block {
+    display: flex;
+    width: 100%;
 }
 
 /* 波轮选择器核心样式 - 重点修复数字位置 */
@@ -254,6 +371,11 @@ button:focus-visible,
     .wheel-wrapper {
         width: 72px;
     }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+    }
 }
 
 /* 横屏或较矮屏幕：压缩垂直空间 */
@@ -269,5 +391,29 @@ button:focus-visible,
 
     .wheel-wrapper {
         height: 168px;
+    }
+
+    .card {
+        margin-bottom: 18px;
+    }
+}
+
+/* 横屏手机：降低垂直占用，避免内容被裁切 */
+@media (max-height: 480px) and (orientation: landscape) {
+    .top-bar {
+        display: none;
+    }
+
+    .main-title {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+
+    .subtitle {
+        margin-bottom: 12px;
+    }
+
+    .wheel-wrapper {
+        height: 140px;
     }
 }
