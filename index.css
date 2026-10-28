@@ -76,6 +76,7 @@ body::after {
     --shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.15);
     --radius-card: 20px;
     --touch-target: 48px;
+    --wheel-item-height: 56px;
 }
 
 /* 核心动画效果 */
@@ -185,6 +186,40 @@ body::after {
     box-shadow: var(--shadow-strong), var(--focus-ring);
 }
 
+/* 日期选择卡片：承载滚轮与提示，视觉上更聚焦 */
+.date-card {
+    background: linear-gradient(170deg, #FFFFFF 0%, #FFF8FA 100%);
+    border: 1px solid rgba(255, 107, 139, 0.14);
+}
+
+/* 当前选中的日期摘要，帮助用户确认选择 */
+.date-summary {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    margin-bottom: 18px;
+    font-size: 0.95rem;
+    color: var(--gray-dark);
+    line-height: 1.5;
+    text-align: center;
+}
+
+.date-summary strong {
+    color: var(--primary);
+    font-variant-numeric: tabular-nums;
+}
+
+.date-hint {
+    margin-top: 14px;
+    font-size: 0.8rem;
+    color: var(--gray);
+    text-align: center;
+    line-height: 1.6;
+}
+
 /* 祝福卡片：结果展示用，带入场动画与视觉层次 */
 .blessing-card {
     position: relative;
@@ -262,6 +297,7 @@ body::after {
     color: var(--primary);
     background: rgba(255, 107, 139, 0.1);
     border: 1px solid rgba(255, 107, 139, 0.22);
+    font-variant-numeric: tabular-nums;
 }
 
 /* 结果区：操作按钮组，移动端纵向排列更易点击 */
@@ -398,6 +434,12 @@ body::after {
     cursor: grabbing;
 }
 
+/* 键盘聚焦时给出明确轮廓，方便无鼠标操作 */
+.wheel-wrapper:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+}
+
 /* 中间高亮条：明确当前选中位置 */
 .wheel-wrapper::after {
     content: "";
@@ -405,7 +447,7 @@ body::after {
     left: 6px;
     right: 6px;
     top: 50%;
-    height: 56px;
+    height: var(--wheel-item-height);
     transform: translateY(-50%);
     border-radius: 12px;
     background: rgba(255, 107, 139, 0.08);
@@ -421,12 +463,12 @@ body::after {
 
 /* 修复数字位置的关键样式 */
 .wheel-item {
-    height: 56px; /* 固定高度确保对齐 */
+    height: var(--wheel-item-height); /* 固定高度确保对齐 */
     display: flex;
     align-items: center; /* 垂直居中 */
     justify-content: center; /* 水平居中 */
     font-size: 1.2rem;
-    transition: color 0.2s ease, font-size 0.2s ease, opacity 0.2s ease;
+    transition: color 0.2s ease, font-size 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
     width: 100%; /* 确保占满容器宽度 */
     position: relative;
     z-index: 1; /* 确保数字位于高亮条上方 */
@@ -443,6 +485,7 @@ body::after {
     font-weight: bold;
     font-size: 1.5rem;
     opacity: 1;
+    transform: scale(1.04);
 }
 
 /* 键盘可访问性焦点 */
@@ -467,6 +510,25 @@ button:focus-visible,
     border: 0;
 }
 
+/* 空态与加载态：避免内容区域突然塌陷 */
+.state-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 120px;
+    color: var(--gray);
+    font-size: 0.9rem;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.state-placeholder .state-icon {
+    font-size: 1.8rem;
+    animation: pulse 2.4s ease-in-out infinite;
+}
+
 /* 减少动画偏好：尊重系统设置 */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -479,8 +541,14 @@ button:focus-visible,
     }
 
     .blessing-emoji,
-    .main-title {
+    .main-title,
+    .wheel-icon,
+    .state-placeholder .state-icon {
         animation: none !important;
+    }
+
+    .wheel-item.active {
+        transform: none;
     }
 }
 
@@ -496,6 +564,11 @@ button:focus-visible,
 
     .wheel-wrapper::after {
         border-color: var(--primary);
+    }
+
+    .date-hint,
+    .blessing-sign {
+        color: #555555;
     }
 }
 
@@ -534,6 +607,10 @@ button:focus-visible,
 
     .blessing-text {
         font-size: 0.95rem;
+    }
+
+    .date-summary {
+        font-size: 0.88rem;
     }
 }
 
@@ -623,7 +700,8 @@ button:focus-visible,
     body::after,
     .top-bar,
     .result-actions,
-    .wheel-container {
+    .wheel-container,
+    .date-hint {
         display: none !important;
     }
 
@@ -634,5 +712,10 @@ button:focus-visible,
     .card {
         box-shadow: none;
         border: 1px solid #DDDDDD;
+        break-inside: avoid;
+    }
+
+    .blessing-card {
+        animation: none !important;
     }
 }
