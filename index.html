@@ -18,17 +18,28 @@
         <p class="noscript-tip">请启用 JavaScript 以体验完整的生日祝福互动效果。</p>
     </noscript>
     <main id="app" class="app" role="main" aria-label="生日祝福页面">
+        <div class="app-decor" aria-hidden="true">
+            <span class="decor-dot decor-dot-1"></span>
+            <span class="decor-dot decor-dot-2"></span>
+            <span class="decor-dot decor-dot-3"></span>
+        </div>
         <header class="app-header">
             <h1 class="app-title">生日祝福 🌟</h1>
             <p class="app-subtitle">选择日期，收获一份专属的祝福</p>
         </header>
         <section id="birthday-section" class="birthday-section" aria-labelledby="birthday-label">
-            <label id="birthday-label" for="birthday-input" class="birthday-label">选择生日日期</label>
+            <label id="birthday-label" for="birthday-input" class="birthday-label">
+                选择生日日期
+                <span class="birthday-required" aria-hidden="true">*</span>
+            </label>
             <input
                 id="birthday-input"
                 class="birthday-input"
                 type="date"
                 name="birthday"
+                min="1900-01-01"
+                max="2100-12-31"
+                required
                 aria-describedby="birthday-hint"
                 autocomplete="bday"
             >
@@ -45,13 +56,16 @@
                 </button>
             </div>
         </section>
-        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false">
+        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-label="祝福卡片区域">
             <!-- 祝福卡片由脚本渲染 -->
             <div class="card-placeholder" id="card-placeholder">
                 <i class="fa fa-gift card-placeholder-icon" aria-hidden="true"></i>
                 <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
             </div>
         </section>
+        <footer class="app-footer">
+            <p class="app-footer-text">愿每一天都有值得庆祝的小确幸</p>
+        </footer>
     </main>
     <script src="index.js" defer></script>
 </body>

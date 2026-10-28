@@ -126,6 +126,12 @@ body::after {
     100% { transform: rotate(360deg); }
 }
 
+/* 骨架占位动画：加载时保持结构稳定，避免布局跳动 */
+@keyframes skeleton-wave {
+    0% { background-position: -160% 0; }
+    100% { background-position: 260% 0; }
+}
+
 /* 页面切换动画：作为可滚动容器，避免移动端内容被裁切 */
 .page {
     position: absolute;
@@ -275,6 +281,20 @@ body::after {
     border-radius: 50%;
     background: radial-gradient(circle, rgba(107, 159, 255, 0.18), transparent 70%);
     pointer-events: none;
+}
+
+/* 卡片顶部丝带装饰，强化"礼物/祝福"的视觉隐喻 */
+.blessing-ribbon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--primary), var(--accent), var(--secondary));
+    background-size: 200% 100%;
+    animation: shimmer 6s linear infinite;
+    pointer-events: none;
+    z-index: 2;
 }
 
 .blessing-emoji {
@@ -478,6 +498,21 @@ body::after {
     padding: 10px 0;
 }
 
+/* 每个滚轮上方的标签，明确月/日含义 */
+.wheel-label {
+    font-size: 0.75rem;
+    color: var(--gray);
+    text-align: center;
+    margin-bottom: 6px;
+    letter-spacing: 0.08em;
+}
+
+.wheel-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .wheel-wrapper {
     width: 80px; /* 固定宽度确保数字不溢出 */
     height: 210px;
@@ -592,6 +627,31 @@ button:focus-visible,
     animation: pulse 2.4s ease-in-out infinite;
 }
 
+/* 骨架屏：加载时占位，减少布局抖动 */
+.skeleton {
+    display: block;
+    border-radius: 10px;
+    background: linear-gradient(90deg, #F2F2F2 25%, #FAFAFA 37%, #F2F2F2 63%);
+    background-size: 200% 100%;
+    animation: skeleton-wave 1.4s ease-in-out infinite;
+}
+
+.skeleton-line {
+    height: 14px;
+    margin: 10px auto;
+    width: 80%;
+}
+
+.skeleton-line.short {
+    width: 55%;
+}
+
+.skeleton-title {
+    height: 22px;
+    width: 60%;
+    margin: 0 auto 14px;
+}
+
 /* 减少动画偏好：尊重系统设置 */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -606,7 +666,8 @@ button:focus-visible,
     .blessing-emoji,
     .main-title,
     .wheel-icon,
-    .state-placeholder .state-icon {
+    .state-placeholder .state-icon,
+    .blessing-ribbon {
         animation: none !important;
     }
 
@@ -765,6 +826,48 @@ button:focus-visible,
     }
 }
 
+/* 系统深色模式：降低亮度，保持柔和而非刺眼 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: linear-gradient(to bottom, #1F1B24, #1A2233);
+        color: #D8D8E0;
+    }
+
+    .card,
+    .date-card {
+        background: #2A2733;
+        border-color: rgba(255, 107, 139, 0.2);
+    }
+
+    .blessing-card {
+        background: linear-gradient(160deg, #2A2733 0%, #302836 60%, #232B3A 100%);
+    }
+
+    .blessing-text,
+    .date-summary,
+    .subtitle {
+        color: #D8D8E0;
+    }
+
+    .wheel-wrapper {
+        background: linear-gradient(to bottom, rgba(42, 39, 51, 0.7), rgba(42, 39, 51, 0.98));
+    }
+
+    .wheel-item {
+        color: #C9C9D4;
+    }
+
+    .btn-secondary {
+        background: #2A2733;
+        color: #9DBBFF;
+    }
+
+    .btn-ghost {
+        color: #C9C9D4;
+        border-color: rgba(201, 201, 212, 0.35);
+    }
+}
+
 /* 打印：隐藏装饰与按钮，保留祝福内容 */
 @media print {
     body::before,
@@ -772,7 +875,8 @@ button:focus-visible,
     .top-bar,
     .result-actions,
     .wheel-container,
-    .date-hint {
+    .date-hint,
+    .blessing-ribbon {
         display: none !important;
     }
 
