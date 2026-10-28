@@ -40,13 +40,22 @@
                 min="1900-01-01"
                 max="2100-12-31"
                 required
-                aria-describedby="birthday-hint"
+                aria-describedby="birthday-hint birthday-preview"
                 autocomplete="bday"
             >
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
+            <p id="birthday-preview" class="birthday-preview" aria-live="polite" aria-atomic="true">
+                尚未选择日期
+            </p>
             <div class="birthday-actions" role="group" aria-label="日期快捷操作">
                 <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期">
                     <i class="fa fa-calendar-check-o" aria-hidden="true"></i> 今天
+                </button>
+                <button id="this-month-btn" class="btn btn-ghost" type="button" aria-label="选择本月第一天的日期">
+                    <i class="fa fa-calendar" aria-hidden="true"></i> 本月
+                </button>
+                <button id="next-month-btn" class="btn btn-ghost" type="button" aria-label="选择下个月第一天的日期">
+                    <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> 下月
                 </button>
                 <button id="generate-btn" class="btn btn-primary" type="button" aria-label="生成生日祝福卡片">
                     <i class="fa fa-magic" aria-hidden="true"></i> 生成祝福
