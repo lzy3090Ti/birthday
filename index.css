@@ -8,6 +8,7 @@
 
 html {
     -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
 }
 
 body {
@@ -20,6 +21,7 @@ body {
     text-rendering: optimizeLegibility;
     color: var(--gray-dark);
     position: relative;
+    overscroll-behavior-y: contain;
 }
 
 /* 背景柔光装饰，提升视觉层次但不影响交互 */
@@ -72,6 +74,8 @@ body::after {
     --focus-ring: 0 0 0 3px rgba(107, 159, 255, 0.45);
     --shadow-soft: 0 5px 15px rgba(0, 0, 0, 0.1);
     --shadow-strong: 0 8px 25px rgba(0, 0, 0, 0.15);
+    --radius-card: 20px;
+    --touch-target: 48px;
 }
 
 /* 核心动画效果 */
@@ -111,6 +115,11 @@ body::after {
     }
 }
 
+@keyframes shimmer {
+    0% { background-position: -120% 0; }
+    100% { background-position: 220% 0; }
+}
+
 /* 页面切换动画 */
 .page {
     position: absolute;
@@ -124,6 +133,7 @@ body::after {
 .page-hidden {
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
 }
 
 /* 标题样式 */
@@ -160,7 +170,7 @@ body::after {
 /* 卡片样式 */
 .card {
     background: white;
-    border-radius: 20px;
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-soft);
     padding: 25px;
     margin-bottom: 30px;
@@ -214,6 +224,7 @@ body::after {
     line-height: 1;
     margin-bottom: 12px;
     animation: float 3s ease-in-out infinite;
+    display: inline-block;
 }
 
 .blessing-title {
@@ -229,12 +240,28 @@ body::after {
     color: var(--gray-dark);
     line-height: 1.75;
     letter-spacing: 0.01em;
+    white-space: pre-line;
 }
 
 .blessing-sign {
     margin-top: 14px;
     font-size: 0.85rem;
     color: var(--gray);
+}
+
+/* 祝福卡片内的高亮徽标，用于展示生日日期等关键信息 */
+.blessing-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--primary);
+    background: rgba(255, 107, 139, 0.1);
+    border: 1px solid rgba(255, 107, 139, 0.22);
 }
 
 /* 结果区：操作按钮组，移动端纵向排列更易点击 */
@@ -251,7 +278,7 @@ body::after {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    min-height: 48px;
+    min-height: var(--touch-target);
     padding: 12px 28px;
     border: none;
     border-radius: 999px;
@@ -261,14 +288,17 @@ body::after {
     background: linear-gradient(135deg, var(--primary), #FF8FA8);
     box-shadow: 0 6px 16px rgba(255, 107, 139, 0.35);
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease, filter 0.2s ease;
     -webkit-user-select: none;
     user-select: none;
     touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn:hover {
     box-shadow: 0 8px 22px rgba(255, 107, 139, 0.45);
+    filter: brightness(1.03);
 }
 
 .btn:active {
@@ -279,6 +309,7 @@ body::after {
     opacity: 0.55;
     cursor: not-allowed;
     box-shadow: none;
+    filter: none;
 }
 
 .btn-secondary {
@@ -290,6 +321,20 @@ body::after {
 
 .btn-secondary:hover {
     box-shadow: 0 6px 18px rgba(107, 159, 255, 0.28);
+}
+
+.btn-ghost {
+    color: var(--gray-dark);
+    background: transparent;
+    box-shadow: none;
+    border: 1px dashed rgba(102, 102, 102, 0.35);
+    font-weight: 500;
+}
+
+.btn-ghost:hover {
+    box-shadow: none;
+    border-color: rgba(102, 102, 102, 0.55);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 .btn-block {
@@ -344,6 +389,13 @@ body::after {
     touch-action: pan-y;
     mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
     -webkit-mask-image: linear-gradient(to bottom, transparent, black 20%, black 80%, transparent);
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.wheel-wrapper:active {
+    cursor: grabbing;
 }
 
 /* 中间高亮条：明确当前选中位置 */
@@ -382,6 +434,7 @@ body::after {
     -webkit-user-select: none;
     font-variant-numeric: tabular-nums; /* 数字等宽，滚动时更稳定 */
     color: var(--gray-dark);
+    opacity: 0.7;
 }
 
 /* 激活状态的数字样式 */
@@ -389,6 +442,7 @@ body::after {
     color: var(--primary);
     font-weight: bold;
     font-size: 1.5rem;
+    opacity: 1;
 }
 
 /* 键盘可访问性焦点 */
@@ -423,12 +477,33 @@ button:focus-visible,
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+
+    .blessing-emoji,
+    .main-title {
+        animation: none !important;
+    }
+}
+
+/* 高对比度偏好：加强边框与文字对比 */
+@media (prefers-contrast: more) {
+    .card {
+        border: 2px solid var(--gray);
+    }
+
+    .blessing-text {
+        color: #333333;
+    }
+
+    .wheel-wrapper::after {
+        border-color: var(--primary);
+    }
 }
 
 /* 移动端适配：小屏收紧间距，保证触控区域 */
 @media (max-width: 360px) {
     .container {
-        padding: 0 14px;
+        padding-left: max(14px, env(safe-area-inset-left));
+        padding-right: max(14px, env(safe-area-inset-right));
     }
 
     .card {
@@ -455,6 +530,10 @@ button:focus-visible,
 
     .blessing-title {
         font-size: 1.15rem;
+    }
+
+    .blessing-text {
+        font-size: 0.95rem;
     }
 }
 
@@ -504,6 +583,14 @@ button:focus-visible,
 
 /* 大屏与平板：结果按钮横向排列，卡片留白更舒展 */
 @media (min-width: 600px) {
+    .container {
+        max-width: 560px;
+    }
+
+    .card {
+        padding: 30px;
+    }
+
     .result-actions {
         flex-direction: row;
         justify-content: center;
@@ -511,5 +598,41 @@ button:focus-visible,
 
     .result-actions .btn {
         flex: 1 1 0;
+    }
+}
+
+/* 悬停能力设备才启用 hover 视觉反馈，避免移动端粘滞 */
+@media (hover: none) {
+    .card:hover {
+        box-shadow: var(--shadow-soft);
+    }
+
+    .btn:hover {
+        box-shadow: 0 6px 16px rgba(255, 107, 139, 0.35);
+        filter: none;
+    }
+
+    .btn-secondary:hover {
+        box-shadow: 0 4px 12px rgba(107, 159, 255, 0.18);
+    }
+}
+
+/* 打印：隐藏装饰与按钮，保留祝福内容 */
+@media print {
+    body::before,
+    body::after,
+    .top-bar,
+    .result-actions,
+    .wheel-container {
+        display: none !important;
+    }
+
+    body {
+        background: #FFFFFF;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #DDDDDD;
     }
 }
