@@ -6,12 +6,14 @@
     <meta name="description" content="温馨的生日祝福页面，选择日期即可查看专属祝福卡片与动画效果。">
     <meta name="theme-color" content="#ff6b9d">
     <meta name="color-scheme" content="light">
+    <meta name="format-detection" content="telephone=no">
     <title>生日祝福 🌟</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="index.css" rel="stylesheet">
 </head>
 <body>
+    <a class="skip-link" href="#app">跳到主要内容</a>
     <noscript>
         <p class="noscript-tip">请启用 JavaScript 以体验完整的生日祝福互动效果。</p>
     </noscript>
@@ -31,10 +33,26 @@
                 autocomplete="bday"
             >
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
+            <div class="birthday-actions" role="group" aria-label="日期快捷操作">
+                <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期">
+                    <i class="fa fa-calendar-check-o" aria-hidden="true"></i> 今天
+                </button>
+                <button id="generate-btn" class="btn btn-primary" type="button" aria-label="生成生日祝福卡片">
+                    <i class="fa fa-magic" aria-hidden="true"></i> 生成祝福
+                </button>
+                <button id="reset-btn" class="btn btn-ghost" type="button" aria-label="清空生日日期">
+                    <i class="fa fa-eraser" aria-hidden="true"></i> 清空
+                </button>
+            </div>
         </section>
-        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true">
+        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false">
             <!-- 祝福卡片由脚本渲染 -->
+            <div class="card-placeholder" id="card-placeholder">
+                <i class="fa fa-gift card-placeholder-icon" aria-hidden="true"></i>
+                <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
+            </div>
         </section>
     </main>
+    <script src="index.js" defer></script>
 </body>
 </html>
