@@ -6,6 +6,10 @@
     font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC", "Source Han Sans SC", "Comic Sans MS", "Marker Felt", sans-serif;
 }
 
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     background: linear-gradient(to bottom, #FFF0F5, #E6F2FF);
     min-height: 100vh;
@@ -15,14 +19,45 @@ body {
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     color: var(--gray-dark);
+    position: relative;
+}
+
+/* 背景柔光装饰，提升视觉层次但不影响交互 */
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(2px);
+}
+
+body::before {
+    width: 220px;
+    height: 220px;
+    top: -80px;
+    left: -70px;
+    background: radial-gradient(circle, rgba(255, 107, 139, 0.22), transparent 68%);
+}
+
+body::after {
+    width: 260px;
+    height: 260px;
+    bottom: -110px;
+    right: -90px;
+    background: radial-gradient(circle, rgba(107, 159, 255, 0.2), transparent 68%);
 }
 
 .container {
+    position: relative;
+    z-index: 1;
     max-width: 480px;
     margin: 0 auto;
     padding: 0 20px;
     padding-left: max(20px, env(safe-area-inset-left));
     padding-right: max(20px, env(safe-area-inset-right));
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
 }
 
 /* 颜色变量定义 */
@@ -162,6 +197,18 @@ body {
     pointer-events: none;
 }
 
+.blessing-card::after {
+    content: "";
+    position: absolute;
+    bottom: -50px;
+    left: -50px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(107, 159, 255, 0.18), transparent 70%);
+    pointer-events: none;
+}
+
 .blessing-emoji {
     font-size: 2.4rem;
     line-height: 1;
@@ -188,6 +235,14 @@ body {
     margin-top: 14px;
     font-size: 0.85rem;
     color: var(--gray);
+}
+
+/* 结果区：操作按钮组，移动端纵向排列更易点击 */
+.result-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 6px;
 }
 
 /* 按钮：保证移动端触控尺寸不小于 44px */
@@ -231,6 +286,10 @@ body {
     background: #FFFFFF;
     border: 1px solid rgba(107, 159, 255, 0.4);
     box-shadow: 0 4px 12px rgba(107, 159, 255, 0.18);
+}
+
+.btn-secondary:hover {
+    box-shadow: 0 6px 18px rgba(107, 159, 255, 0.28);
 }
 
 .btn-block {
@@ -341,6 +400,19 @@ button:focus-visible,
     border-radius: 10px;
 }
 
+/* 屏幕阅读器专用文本 */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
 /* 减少动画偏好：尊重系统设置 */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -375,6 +447,14 @@ button:focus-visible,
     .btn {
         padding: 12px 20px;
         font-size: 0.95rem;
+    }
+
+    .blessing-emoji {
+        font-size: 2rem;
+    }
+
+    .blessing-title {
+        font-size: 1.15rem;
     }
 }
 
@@ -415,5 +495,21 @@ button:focus-visible,
 
     .wheel-wrapper {
         height: 140px;
+    }
+
+    .result-actions {
+        flex-direction: row;
+    }
+}
+
+/* 大屏与平板：结果按钮横向排列，卡片留白更舒展 */
+@media (min-width: 600px) {
+    .result-actions {
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .result-actions .btn {
+        flex: 1 1 0;
     }
 }

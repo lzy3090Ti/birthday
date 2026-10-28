@@ -2,10 +2,39 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="温馨的生日祝福页面，选择日期即可查看专属祝福卡片与动画效果。">
+    <meta name="theme-color" content="#ff6b9d">
+    <meta name="color-scheme" content="light">
     <title>生日祝福 🌟</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="index.css" rel="stylesheet">
-    
 </head>
-
+<body>
+    <noscript>
+        <p class="noscript-tip">请启用 JavaScript 以体验完整的生日祝福互动效果。</p>
+    </noscript>
+    <main id="app" class="app" role="main" aria-label="生日祝福页面">
+        <header class="app-header">
+            <h1 class="app-title">生日祝福 🌟</h1>
+            <p class="app-subtitle">选择日期，收获一份专属的祝福</p>
+        </header>
+        <section id="birthday-section" class="birthday-section" aria-labelledby="birthday-label">
+            <label id="birthday-label" for="birthday-input" class="birthday-label">选择生日日期</label>
+            <input
+                id="birthday-input"
+                class="birthday-input"
+                type="date"
+                name="birthday"
+                aria-describedby="birthday-hint"
+                autocomplete="bday"
+            >
+            <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
+        </section>
+        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true">
+            <!-- 祝福卡片由脚本渲染 -->
+        </section>
+    </main>
+</body>
+</html>
