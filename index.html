@@ -11,6 +11,17 @@
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="index.css" rel="stylesheet">
+    <style>
+        /* 首屏关键样式，避免字体图标加载前出现布局跳动 */
+        .app{max-width:640px;margin:0 auto;padding:24px 16px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom));}
+        .skip-link{position:absolute;left:-9999px;top:0;background:#ff6b9d;color:#fff;padding:10px 16px;border-radius:0 0 8px 0;z-index:100;}
+        .skip-link:focus{left:0;}
+        .btn{min-height:44px;touch-action:manipulation;}
+        .birthday-input{font-size:16px;min-height:48px;width:100%;}
+        .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
+        .card-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+        .card-actions[hidden]{display:none;}
+    </style>
 </head>
 <body>
     <a class="skip-link" href="#app">跳到主要内容</a>
@@ -46,11 +57,7 @@
                 inputmode="numeric"
             >
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
-            <p id="birthday-error" class="birthday-error" role="alert" hidden></p>
-            <p id="birthday-preview" class="birthday-preview" aria-live="polite" aria-atomic="true">
-                尚未选择日期
-            </p>
-            <div class="birthday-actions" role="group" aria-label="日期快捷操作">
+            <div class="chip-row" role="group" aria-label="快捷日期选择">
                 <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期">
                     <i class="fa fa-calendar-check-o" aria-hidden="true"></i> 今天
                 </button>
@@ -60,6 +67,12 @@
                 <button id="next-month-btn" class="btn btn-ghost" type="button" aria-label="选择下个月第一天的日期">
                     <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> 下月
                 </button>
+            </div>
+            <p id="birthday-error" class="birthday-error" role="alert" hidden></p>
+            <p id="birthday-preview" class="birthday-preview" aria-live="polite" aria-atomic="true">
+                尚未选择日期
+            </p>
+            <div class="birthday-actions" role="group" aria-label="日期操作">
                 <button id="generate-btn" class="btn btn-primary" type="button" aria-label="生成生日祝福卡片">
                     <i class="fa fa-magic" aria-hidden="true"></i> 生成祝福
                 </button>
@@ -75,7 +88,7 @@
                 <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
             </div>
         </section>
-        <div class="card-actions" role="group" aria-label="祝福卡片操作" hidden>
+        <div id="card-actions" class="card-actions" role="group" aria-label="祝福卡片操作" hidden>
             <button id="regenerate-btn" class="btn btn-ghost" type="button" aria-label="重新生成祝福卡片">
                 <i class="fa fa-refresh" aria-hidden="true"></i> 换一句祝福
             </button>

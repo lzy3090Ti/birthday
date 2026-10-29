@@ -241,6 +241,12 @@ body::after {
     font-variant-numeric: tabular-nums;
 }
 
+/* 日期摘要空态：未选择时给出温和提示而非空白 */
+.date-summary.is-empty {
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
 .date-hint {
     margin-top: 14px;
     font-size: 0.8rem;
@@ -370,6 +376,10 @@ body::after {
     animation-delay: 0.12s;
 }
 
+.result-actions > *:nth-child(4) {
+    animation-delay: 0.18s;
+}
+
 /* 按钮：保证移动端触控尺寸不小于 44px */
 .btn {
     display: inline-flex;
@@ -459,6 +469,13 @@ body::after {
 .btn-block {
     display: flex;
     width: 100%;
+}
+
+/* 复制成功反馈：按钮短暂切换为成功态，提升操作确认感 */
+.btn.is-copied {
+    background: linear-gradient(135deg, #4CAF7D, #6FCF97);
+    box-shadow: 0 6px 16px rgba(76, 175, 125, 0.35);
+    color: #FFFFFF;
 }
 
 /* 波轮选择器核心样式 - 重点修复数字位置 */
@@ -695,12 +712,17 @@ button:focus-visible,
     }
 
     .date-hint,
-    .blessing-sign {
+    .blessing-sign,
+    .date-summary.is-empty {
         color: #555555;
     }
 
     .date-summary .date-chip {
         border-color: var(--primary);
+    }
+
+    .wheel-item {
+        opacity: 1;
     }
 }
 
@@ -849,6 +871,12 @@ button:focus-visible,
         color: #D8D8E0;
     }
 
+    .date-summary.is-empty,
+    .date-hint,
+    .blessing-sign {
+        color: #A9A9B8;
+    }
+
     .wheel-wrapper {
         background: linear-gradient(to bottom, rgba(42, 39, 51, 0.7), rgba(42, 39, 51, 0.98));
     }
@@ -865,6 +893,11 @@ button:focus-visible,
     .btn-ghost {
         color: #C9C9D4;
         border-color: rgba(201, 201, 212, 0.35);
+    }
+
+    .skeleton {
+        background: linear-gradient(90deg, #333040 25%, #3B3849 37%, #333040 63%);
+        background-size: 200% 100%;
     }
 }
 
