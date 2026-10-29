@@ -17,7 +17,7 @@
     <noscript>
         <p class="noscript-tip">请启用 JavaScript 以体验完整的生日祝福互动效果。</p>
     </noscript>
-    <main id="app" class="app" role="main" aria-label="生日祝福页面">
+    <main id="app" class="app" role="main" aria-label="生日祝福页面" tabindex="-1">
         <div class="app-decor" aria-hidden="true">
             <span class="decor-dot decor-dot-1"></span>
             <span class="decor-dot decor-dot-2"></span>
@@ -40,10 +40,13 @@
                 min="1900-01-01"
                 max="2100-12-31"
                 required
-                aria-describedby="birthday-hint birthday-preview"
+                aria-describedby="birthday-hint birthday-preview birthday-error"
+                aria-invalid="false"
                 autocomplete="bday"
+                inputmode="numeric"
             >
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
+            <p id="birthday-error" class="birthday-error" role="alert" hidden></p>
             <p id="birthday-preview" class="birthday-preview" aria-live="polite" aria-atomic="true">
                 尚未选择日期
             </p>
@@ -72,6 +75,14 @@
                 <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
             </div>
         </section>
+        <div class="card-actions" role="group" aria-label="祝福卡片操作" hidden>
+            <button id="regenerate-btn" class="btn btn-ghost" type="button" aria-label="重新生成祝福卡片">
+                <i class="fa fa-refresh" aria-hidden="true"></i> 换一句祝福
+            </button>
+            <button id="pick-again-btn" class="btn btn-ghost" type="button" aria-label="返回并重新选择日期">
+                <i class="fa fa-pencil" aria-hidden="true"></i> 重新选日期
+            </button>
+        </div>
         <footer class="app-footer">
             <p class="app-footer-text">愿每一天都有值得庆祝的小确幸</p>
         </footer>
