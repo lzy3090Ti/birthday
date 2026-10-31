@@ -16,7 +16,7 @@
         /* 首屏关键样式，避免字体图标加载前出现布局跳动 */
         .app{max-width:640px;margin:0 auto;padding:24px 16px 40px;padding-bottom:calc(40px + env(safe-area-inset-bottom));}
         .skip-link{position:absolute;left:-9999px;top:0;background:#ff6b9d;color:#fff;padding:10px 16px;border-radius:0 0 8px 0;z-index:100;}
-        .skip-link:focus{left:0;}
+        .skip-link:focus{left:0;outline:2px solid #fff;outline-offset:2px;}
         .btn{min-height:44px;touch-action:manipulation;}
         .birthday-input{font-size:16px;min-height:48px;width:100%;}
         .chip-row{display:flex;flex-wrap:wrap;gap:8px;}
@@ -37,6 +37,13 @@
         .birthday-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
         .birthday-actions .btn{flex:1 1 140px;justify-content:center;}
         .noscript-tip{margin:16px;padding:12px 16px;border-radius:12px;background:#fff3f7;color:#b8436f;text-align:center;}
+        .card-section-heading{font-size:15px;font-weight:600;color:#b8436f;margin:24px 0 12px;display:flex;align-items:center;gap:8px;}
+        .card-section-heading::after{content:"";flex:1;height:1px;background:rgba(255,107,157,.2);}
+        .card-placeholder{display:flex;flex-direction:column;align-items:center;gap:10px;padding:32px 18px;border-radius:16px;background:rgba(255,255,255,.6);border:1px dashed rgba(255,107,157,.35);text-align:center;}
+        .card-placeholder-icon{font-size:28px;color:#ff6b9d;}
+        .card-placeholder-text{margin:0;color:#8a5a6c;font-size:14px;line-height:1.6;}
+        .share-tip{margin:8px 0 0;font-size:13px;color:#b8436f;text-align:center;}
+        .share-tip[hidden]{display:none;}
     </style>
 </head>
 <body>
@@ -71,6 +78,7 @@
                 aria-invalid="false"
                 autocomplete="bday"
                 inputmode="numeric"
+                placeholder="年 / 月 / 日"
             >
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
             <div class="chip-row" role="group" aria-label="快捷日期选择">
@@ -111,7 +119,10 @@
                 </button>
             </div>
         </section>
-        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-label="祝福卡片区域">
+        <h2 class="card-section-heading" id="card-heading">
+            <i class="fa fa-heart" aria-hidden="true"></i> 专属祝福卡片
+        </h2>
+        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-labelledby="card-heading" aria-label="祝福卡片区域">
             <!-- 祝福卡片由脚本渲染 -->
             <div class="card-placeholder" id="card-placeholder">
                 <i class="fa fa-gift card-placeholder-icon" aria-hidden="true"></i>
@@ -127,10 +138,14 @@
             <button id="regenerate-btn" class="btn btn-ghost" type="button" aria-label="重新生成祝福卡片">
                 <i class="fa fa-refresh" aria-hidden="true"></i> 换一句祝福
             </button>
+            <button id="copy-btn" class="btn btn-ghost" type="button" aria-label="复制当前祝福文字">
+                <i class="fa fa-copy" aria-hidden="true"></i> 复制祝福
+            </button>
             <button id="pick-again-btn" class="btn btn-ghost" type="button" aria-label="返回并重新选择日期">
                 <i class="fa fa-pencil" aria-hidden="true"></i> 重新选日期
             </button>
         </div>
+        <p id="share-tip" class="share-tip" role="status" aria-live="polite" hidden></p>
         <footer class="app-footer">
             <p class="app-footer-text">愿每一天都有值得庆祝的小确幸</p>
         </footer>
