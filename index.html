@@ -64,6 +64,11 @@
         .birthday-preview{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,107,157,.08);color:#7a4358;font-size:14px;line-height:1.6;}
         .birthday-preview.is-empty{color:#9a7a86;background:rgba(255,107,157,.05);}
 
+        /* 月份切换条 */
+        .month-bar{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 0;padding:8px 10px;border-radius:12px;background:rgba(255,255,255,.7);border:1px solid rgba(255,107,157,.18);}
+        .month-bar-label{flex:1 1 auto;text-align:center;font-size:14px;font-weight:600;color:#b8436f;}
+        .month-bar .btn{min-height:40px;padding:0 14px;}
+
         /* 卡片容器 */
         .card-stage{position:relative;min-height:120px;}
         .card-stage > *{transition:opacity .25s ease;}
@@ -74,6 +79,7 @@
             .app{padding-left:12px;padding-right:12px;}
             .step-bar{font-size:11px;}
             .birthday-actions .btn{flex:1 1 100%;}
+            .month-bar-label{font-size:13px;}
         }
 
         .visually-hidden:focus{position:static;width:auto;height:auto;clip:auto;white-space:normal;}
@@ -126,6 +132,17 @@
                 </button>
             </div>
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
+
+            <div class="month-bar" role="group" aria-label="按月份快速定位日期">
+                <button id="prev-month-btn" class="btn btn-ghost" type="button" aria-label="切换到上一个月">
+                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                </button>
+                <span id="month-bar-label" class="month-bar-label" aria-live="polite">本月</span>
+                <button id="next-month-btn" class="btn btn-ghost" type="button" aria-label="切换到下一个月">
+                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                </button>
+            </div>
+
             <div class="chip-row" role="group" aria-label="快捷日期选择">
                 <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期">
                     <i class="fa fa-calendar-check-o" aria-hidden="true"></i> 今天
