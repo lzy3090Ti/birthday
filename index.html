@@ -44,6 +44,39 @@
         .card-placeholder-text{margin:0;color:#8a5a6c;font-size:14px;line-height:1.6;}
         .share-tip{margin:8px 0 0;font-size:13px;color:#b8436f;text-align:center;}
         .share-tip[hidden]{display:none;}
+
+        /* 步骤提示：让操作路径更清晰 */
+        .step-bar{display:flex;align-items:center;gap:6px;margin:0 0 18px;padding:0;list-style:none;font-size:12px;color:#8a5a6c;}
+        .step-bar li{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
+        .step-bar li::after{content:"";width:16px;height:1px;background:rgba(255,107,157,.3);}
+        .step-bar li:last-child::after{display:none;}
+        .step-dot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(255,107,157,.14);color:#b8436f;font-size:11px;font-weight:600;}
+        .step-bar li[aria-current="step"] .step-dot{background:#ff6b9d;color:#fff;}
+
+        /* 日期输入增强 */
+        .input-wrap{position:relative;display:flex;align-items:center;gap:8px;}
+        .input-wrap .birthday-input{flex:1 1 auto;}
+        .input-clear{flex:0 0 auto;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,107,157,.35);background:rgba(255,255,255,.8);color:#b8436f;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation;}
+        .input-clear[hidden]{display:none;}
+        .input-clear:focus-visible{outline:2px solid #ff6b9d;outline-offset:2px;}
+        .birthday-hint{margin:8px 0 0;font-size:13px;color:#8a5a6c;line-height:1.5;}
+        .birthday-error{margin:8px 0 0;font-size:13px;color:#d23c6a;line-height:1.5;}
+        .birthday-preview{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,107,157,.08);color:#7a4358;font-size:14px;line-height:1.6;}
+        .birthday-preview.is-empty{color:#9a7a86;background:rgba(255,107,157,.05);}
+
+        /* 卡片容器 */
+        .card-stage{position:relative;min-height:120px;}
+        .card-stage > *{transition:opacity .25s ease;}
+        @media (prefers-reduced-motion: reduce){.card-stage > *{transition:none;}}
+
+        /* 小屏优化 */
+        @media (max-width:360px){
+            .app{padding-left:12px;padding-right:12px;}
+            .step-bar{font-size:11px;}
+            .birthday-actions .btn{flex:1 1 100%;}
+        }
+
+        .visually-hidden:focus{position:static;width:auto;height:auto;clip:auto;white-space:normal;}
     </style>
 </head>
 <body>
@@ -61,25 +94,37 @@
             <h1 class="app-title">生日祝福 🌟</h1>
             <p class="app-subtitle">选择日期，收获一份专属的祝福</p>
         </header>
+
+        <ol class="step-bar" aria-label="使用步骤">
+            <li aria-current="step"><span class="step-dot">1</span>选择日期</li>
+            <li><span class="step-dot">2</span>生成祝福</li>
+            <li><span class="step-dot">3</span>分享心意</li>
+        </ol>
+
         <section id="birthday-section" class="birthday-section" aria-labelledby="birthday-label">
             <label id="birthday-label" for="birthday-input" class="birthday-label">
                 选择生日日期
                 <span class="birthday-required" aria-hidden="true">*</span>
             </label>
-            <input
-                id="birthday-input"
-                class="birthday-input"
-                type="date"
-                name="birthday"
-                min="1900-01-01"
-                max="2100-12-31"
-                required
-                aria-describedby="birthday-hint birthday-preview birthday-error"
-                aria-invalid="false"
-                autocomplete="bday"
-                inputmode="numeric"
-                placeholder="年 / 月 / 日"
-            >
+            <div class="input-wrap">
+                <input
+                    id="birthday-input"
+                    class="birthday-input"
+                    type="date"
+                    name="birthday"
+                    min="1900-01-01"
+                    max="2100-12-31"
+                    required
+                    aria-describedby="birthday-hint birthday-preview birthday-error"
+                    aria-invalid="false"
+                    autocomplete="bday"
+                    inputmode="numeric"
+                    placeholder="年 / 月 / 日"
+                >
+                <button id="input-clear-btn" class="input-clear" type="button" aria-label="清除已选日期" title="清除日期" hidden>
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
             <div class="chip-row" role="group" aria-label="快捷日期选择">
                 <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期">
@@ -107,7 +152,7 @@
                 </span>
             </div>
             <p id="birthday-error" class="birthday-error" role="alert" hidden></p>
-            <p id="birthday-preview" class="birthday-preview" aria-live="polite" aria-atomic="true">
+            <p id="birthday-preview" class="birthday-preview is-empty" aria-live="polite" aria-atomic="true">
                 尚未选择日期
             </p>
             <div class="birthday-actions" role="group" aria-label="日期操作">
@@ -119,21 +164,26 @@
                 </button>
             </div>
         </section>
+
         <h2 class="card-section-heading" id="card-heading">
             <i class="fa fa-heart" aria-hidden="true"></i> 专属祝福卡片
         </h2>
         <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-labelledby="card-heading" aria-label="祝福卡片区域">
-            <!-- 祝福卡片由脚本渲染 -->
-            <div class="card-placeholder" id="card-placeholder">
-                <i class="fa fa-gift card-placeholder-icon" aria-hidden="true"></i>
-                <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
-            </div>
-            <div class="card-skeleton" id="card-skeleton" hidden aria-hidden="true">
-                <div class="card-skeleton-line"></div>
-                <div class="card-skeleton-line"></div>
-                <div class="card-skeleton-line"></div>
+            <div class="card-stage" id="card-stage">
+                <!-- 祝福卡片由脚本渲染，以下为不同阶段的占位内容 -->
+                <div class="card-placeholder" id="card-placeholder">
+                    <i class="fa fa-gift card-placeholder-icon" aria-hidden="true"></i>
+                    <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
+                </div>
+                <div class="card-skeleton" id="card-skeleton" hidden aria-hidden="true">
+                    <div class="card-skeleton-line"></div>
+                    <div class="card-skeleton-line"></div>
+                    <div class="card-skeleton-line"></div>
+                </div>
+                <div id="card-container" class="card-container" hidden></div>
             </div>
         </section>
+
         <div id="card-actions" class="card-actions" role="group" aria-label="祝福卡片操作" hidden>
             <button id="regenerate-btn" class="btn btn-ghost" type="button" aria-label="重新生成祝福卡片">
                 <i class="fa fa-refresh" aria-hidden="true"></i> 换一句祝福
