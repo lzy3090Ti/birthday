@@ -74,6 +74,14 @@
         .card-stage > *{transition:opacity .25s ease;}
         @media (prefers-reduced-motion: reduce){.card-stage > *{transition:none;}}
 
+        /* 日期快捷选择与月份联动提示 */
+        .quick-picks{margin-top:10px;}
+        .quick-picks .btn[aria-pressed="true"]{border-color:#ff6b9d;background:rgba(255,107,157,.14);color:#b8436f;}
+
+        /* 祝福卡片状态提示 */
+        .card-status{margin:0 0 10px;font-size:13px;color:#8a5a6c;min-height:18px;}
+        .card-status[hidden]{display:none;}
+
         /* 小屏优化 */
         @media (max-width:360px){
             .app{padding-left:12px;padding-right:12px;}
@@ -102,9 +110,9 @@
         </header>
 
         <ol class="step-bar" aria-label="使用步骤">
-            <li aria-current="step"><span class="step-dot">1</span>选择日期</li>
-            <li><span class="step-dot">2</span>生成祝福</li>
-            <li><span class="step-dot">3</span>分享心意</li>
+            <li aria-current="step"><span class="step-dot" aria-hidden="true">1</span>选择日期</li>
+            <li><span class="step-dot" aria-hidden="true">2</span>生成祝福</li>
+            <li><span class="step-dot" aria-hidden="true">3</span>分享心意</li>
         </ol>
 
         <section id="birthday-section" class="birthday-section" aria-labelledby="birthday-label">
@@ -143,14 +151,14 @@
                 </button>
             </div>
 
-            <div class="chip-row" role="group" aria-label="快捷日期选择">
-                <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期">
+            <div class="chip-row quick-picks" role="group" aria-label="快捷日期选择">
+                <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期" aria-pressed="false">
                     <i class="fa fa-calendar-check-o" aria-hidden="true"></i> 今天
                 </button>
-                <button id="this-month-btn" class="btn btn-ghost" type="button" aria-label="选择本月第一天的日期">
+                <button id="this-month-btn" class="btn btn-ghost" type="button" aria-label="选择本月第一天的日期" aria-pressed="false">
                     <i class="fa fa-calendar" aria-hidden="true"></i> 本月
                 </button>
-                <button id="next-month-btn" class="btn btn-ghost" type="button" aria-label="选择下个月第一天的日期">
+                <button id="next-month-btn" class="btn btn-ghost" type="button" aria-label="选择下个月第一天的日期" aria-pressed="false">
                     <i class="fa fa-calendar-plus-o" aria-hidden="true"></i> 下月
                 </button>
             </div>
@@ -186,6 +194,7 @@
             <i class="fa fa-heart" aria-hidden="true"></i> 专属祝福卡片
         </h2>
         <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-labelledby="card-heading">
+            <p id="card-status" class="card-status" role="status" aria-live="polite" hidden></p>
             <div class="card-stage" id="card-stage">
                 <!-- 祝福卡片由脚本渲染，以下为不同阶段的占位内容 -->
                 <div class="card-placeholder" id="card-placeholder">
