@@ -78,6 +78,7 @@ body::after {
     --touch-target: 48px;
     --wheel-item-height: 56px;
     --wheel-visible-items: 5;
+    --wheel-width: 80px;
 }
 
 /* 核心动画效果 */
@@ -542,7 +543,7 @@ body::after {
 
 /* 滚轮高度 = 可见项数量 × 单项高度，保证选中项精确居中 */
 .wheel-wrapper {
-    width: 80px; /* 固定宽度确保数字不溢出 */
+    width: var(--wheel-width);
     height: calc(var(--wheel-item-height) * var(--wheel-visible-items));
     overflow: hidden;
     position: relative;
@@ -554,6 +555,7 @@ body::after {
     cursor: grab;
     -webkit-user-select: none;
     user-select: none;
+    contain: layout paint;
 }
 
 .wheel-wrapper:active {
@@ -587,20 +589,25 @@ body::after {
     will-change: transform;
 }
 
+/* 拖动过程中关闭过渡，让手指跟随更跟手 */
+.wheel-wrapper.is-dragging .wheel {
+    transition: none;
+}
+
 /* 修复数字位置的关键样式 */
 .wheel-item {
-    height: var(--wheel-item-height); /* 固定高度确保对齐 */
+    height: var(--wheel-item-height);
     display: flex;
-    align-items: center; /* 垂直居中 */
-    justify-content: center; /* 水平居中 */
+    align-items: center;
+    justify-content: center;
     font-size: 1.2rem;
     transition: color 0.2s ease, font-size 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
-    width: 100%; /* 确保占满容器宽度 */
+    width: 100%;
     position: relative;
-    z-index: 1; /* 确保数字位于高亮条上方 */
-    user-select: none; /* 防止滚动选择时选中数字文本 */
+    z-index: 1;
+    user-select: none;
     -webkit-user-select: none;
-    font-variant-numeric: tabular-nums; /* 数字等宽，滚动时更稳定 */
+    font-variant-numeric: tabular-nums;
     color: var(--gray-dark);
     opacity: 0.7;
     line-height: 1;
@@ -760,7 +767,7 @@ button:focus-visible,
     }
 
     .wheel-wrapper {
-        width: 72px;
+        --wheel-width: 68px;
     }
 
     .btn {

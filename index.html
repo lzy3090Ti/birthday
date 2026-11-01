@@ -133,12 +133,12 @@
             </div>
             <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
 
-            <div class="month-bar" role="group" aria-label="按月份快速定位日期">
+            <div class="month-bar" role="group" aria-label="按月浏览日期">
                 <button id="prev-month-btn" class="btn btn-ghost" type="button" aria-label="切换到上一个月">
                     <i class="fa fa-chevron-left" aria-hidden="true"></i>
                 </button>
                 <span id="month-bar-label" class="month-bar-label" aria-live="polite">本月</span>
-                <button id="next-month-btn" class="btn btn-ghost" type="button" aria-label="切换到下一个月">
+                <button id="month-step-next-btn" class="btn btn-ghost" type="button" aria-label="切换到下一个月">
                     <i class="fa fa-chevron-right" aria-hidden="true"></i>
                 </button>
             </div>
@@ -185,7 +185,7 @@
         <h2 class="card-section-heading" id="card-heading">
             <i class="fa fa-heart" aria-hidden="true"></i> 专属祝福卡片
         </h2>
-        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-labelledby="card-heading" aria-label="祝福卡片区域">
+        <section id="card-section" class="card-section" aria-live="polite" aria-atomic="true" aria-busy="false" aria-labelledby="card-heading">
             <div class="card-stage" id="card-stage">
                 <!-- 祝福卡片由脚本渲染，以下为不同阶段的占位内容 -->
                 <div class="card-placeholder" id="card-placeholder">
