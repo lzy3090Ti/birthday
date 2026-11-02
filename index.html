@@ -46,13 +46,15 @@
         .share-tip[hidden]{display:none;}
 
         /* 步骤提示：让操作路径更清晰 */
-        .step-bar{display:flex;align-items:center;gap:6px;margin:0 0 18px;padding:0;list-style:none;font-size:12px;color:#8a5a6c;}
+        .step-bar{display:flex;align-items:center;gap:6px;margin:0 0 18px;padding:0;list-style:none;font-size:12px;color:#8a5a6c;overflow-x:auto;scrollbar-width:none;}
+        .step-bar::-webkit-scrollbar{display:none;}
         .step-bar li{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
         .step-bar li::after{content:"";width:16px;height:1px;background:rgba(255,107,157,.3);}
         .step-bar li:last-child::after{display:none;}
-        .step-dot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(255,107,157,.14);color:#b8436f;font-size:11px;font-weight:600;}
+        .step-dot{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:rgba(255,107,157,.14);color:#b8436f;font-size:11px;font-weight:600;transition:background .2s ease,color .2s ease;}
         .step-bar li[aria-current="step"] .step-dot{background:#ff6b9d;color:#fff;}
         .step-bar li[data-done="true"] .step-dot{background:rgba(255,107,157,.28);color:#b8436f;}
+        @media (prefers-reduced-motion: reduce){.step-dot{transition:none;}}
 
         /* 日期输入增强 */
         .input-wrap{position:relative;display:flex;align-items:center;gap:8px;}
@@ -62,6 +64,7 @@
         .input-clear:focus-visible{outline:2px solid #ff6b9d;outline-offset:2px;}
         .birthday-hint{margin:8px 0 0;font-size:13px;color:#8a5a6c;line-height:1.5;}
         .birthday-error{margin:8px 0 0;font-size:13px;color:#d23c6a;line-height:1.5;}
+        .birthday-error[hidden]{display:none;}
         .birthday-preview{margin:12px 0 0;padding:12px 14px;border-radius:12px;background:rgba(255,107,157,.08);color:#7a4358;font-size:14px;line-height:1.6;}
         .birthday-preview.is-empty{color:#9a7a86;background:rgba(255,107,157,.05);}
 
@@ -83,12 +86,22 @@
         .card-status{margin:0 0 10px;font-size:13px;color:#8a5a6c;min-height:18px;}
         .card-status[hidden]{display:none;}
 
+        /* 移动端悬浮操作栏 */
+        .mobile-action-bar{position:fixed;left:0;right:0;bottom:0;z-index:50;display:none;gap:8px;padding:10px 12px;padding-bottom:calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(255,107,157,.18);}
+        .mobile-action-bar .btn{flex:1 1 0;justify-content:center;min-height:46px;}
+        .mobile-action-bar[hidden]{display:none;}
+        @media (max-width:520px){
+            .mobile-action-bar{display:flex;}
+            .app{padding-bottom:calc(84px + env(safe-area-inset-bottom));}
+        }
+
         /* 小屏优化 */
         @media (max-width:360px){
             .app{padding-left:12px;padding-right:12px;}
             .step-bar{font-size:11px;}
             .birthday-actions .btn{flex:1 1 100%;}
             .month-bar-label{font-size:13px;}
+            .mobile-action-bar .btn{font-size:13px;}
         }
 
         .visually-hidden:focus{position:static;width:auto;height:auto;clip:auto;white-space:normal;}
@@ -110,10 +123,10 @@
             <p class="app-subtitle">选择日期，收获一份专属的祝福</p>
         </header>
 
-        <ol class="step-bar" aria-label="使用步骤">
-            <li aria-current="step"><span class="step-dot" aria-hidden="true">1</span>选择日期</li>
-            <li><span class="step-dot" aria-hidden="true">2</span>生成祝福</li>
-            <li><span class="step-dot" aria-hidden="true">3</span>分享心意</li>
+        <ol class="step-bar" id="step-bar" aria-label="使用步骤">
+            <li aria-current="step" data-step="1"><span class="step-dot" aria-hidden="true">1</span>选择日期</li>
+            <li data-step="2"><span class="step-dot" aria-hidden="true">2</span>生成祝福</li>
+            <li data-step="3"><span class="step-dot" aria-hidden="true">3</span>分享心意</li>
         </ol>
 
         <section id="birthday-section" class="birthday-section" aria-labelledby="birthday-label">
@@ -227,6 +240,17 @@
             <p class="app-footer-text">愿每一天都有值得庆祝的小确幸</p>
         </footer>
     </main>
+
+    <!-- 移动端悬浮操作栏：无需滚动即可快速操作 -->
+    <div id="mobile-action-bar" class="mobile-action-bar" role="group" aria-label="快捷操作" hidden>
+        <button id="mobile-generate-btn" class="btn btn-primary" type="button" aria-label="生成生日祝福卡片">
+            <i class="fa fa-magic" aria-hidden="true"></i> 生成祝福
+        </button>
+        <button id="mobile-copy-btn" class="btn btn-ghost" type="button" aria-label="复制当前祝福文字" hidden>
+            <i class="fa fa-copy" aria-hidden="true"></i> 复制
+        </button>
+    </div>
+
     <script src="index.js" defer></script>
 </body>
 </html>

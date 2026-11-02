@@ -333,6 +333,10 @@ body::after {
     position: relative;
     z-index: 1;
     overflow-wrap: anywhere;
+    /* 长祝福文本在窄屏上更易读：限制行宽并居中 */
+    max-width: 34em;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .blessing-sign {
@@ -384,6 +388,20 @@ body::after {
 
 .result-actions > *:nth-child(4) {
     animation-delay: 0.18s;
+}
+
+/* 移动端结果操作区吸底：拇指可达，避免长页面下反复滚动 */
+@media (max-width: 599px) {
+    .result-actions.is-sticky {
+        position: sticky;
+        bottom: 0;
+        z-index: 5;
+        padding: 12px 0 max(12px, env(safe-area-inset-bottom));
+        margin-top: 0;
+        background: linear-gradient(to top, rgba(255, 240, 245, 0.98) 60%, rgba(255, 240, 245, 0));
+        backdrop-filter: blur(6px);
+        -webkit-backdrop-filter: blur(6px);
+    }
 }
 
 /* 按钮：保证移动端触控尺寸不小于 44px */
@@ -937,6 +955,13 @@ button:focus-visible,
 
     .state-placeholder {
         color: #A9A9B8;
+    }
+
+    /* 深色模式下吸底操作区使用深色渐变，避免亮色突兀 */
+    @media (max-width: 599px) {
+        .result-actions.is-sticky {
+            background: linear-gradient(to top, rgba(31, 27, 36, 0.98) 60%, rgba(31, 27, 36, 0));
+        }
     }
 }
 
