@@ -105,6 +105,15 @@
         }
 
         .visually-hidden:focus{position:static;width:auto;height:auto;clip:auto;white-space:normal;}
+
+        /* 新增：日期信息补充与卡片聚焦 */
+        .birthday-extra{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+        .birthday-extra .meta-tag{background:rgba(255,193,7,.14);color:#8a6b1f;}
+        .card-stage:focus-visible{outline:2px solid #ff6b9d;outline-offset:4px;border-radius:16px;}
+        .card-container{outline:none;}
+        .card-container:focus-visible{outline:2px solid #ff6b9d;outline-offset:4px;border-radius:16px;}
+        .app-footer-text{margin:24px 0 0;text-align:center;font-size:13px;color:#9a7a86;}
+        .card-actions .btn[disabled]{opacity:.5;cursor:not-allowed;}
     </style>
 </head>
 <body>
@@ -190,6 +199,16 @@
                     <span id="countdown-text"></span>
                 </span>
             </div>
+            <div class="birthday-extra" aria-live="polite" aria-atomic="true">
+                <span id="age-tag" class="meta-tag" hidden>
+                    <i class="fa fa-birthday-cake" aria-hidden="true"></i>
+                    <span id="age-text"></span>
+                </span>
+                <span id="season-tag" class="meta-tag" hidden>
+                    <i class="fa fa-leaf" aria-hidden="true"></i>
+                    <span id="season-text"></span>
+                </span>
+            </div>
             <p id="birthday-error" class="birthday-error" role="alert" hidden></p>
             <p id="birthday-preview" class="birthday-preview is-empty" aria-live="polite" aria-atomic="true">
                 尚未选择日期
@@ -220,7 +239,7 @@
                     <div class="card-skeleton-line"></div>
                     <div class="card-skeleton-line"></div>
                 </div>
-                <div id="card-container" class="card-container" hidden></div>
+                <div id="card-container" class="card-container" hidden tabindex="-1"></div>
             </div>
         </section>
 
