@@ -322,6 +322,10 @@ body::after {
     color: var(--primary);
     margin-bottom: 10px;
     line-height: 1.4;
+    /* 标题较长时允许自然换行，避免被裁切 */
+    overflow-wrap: anywhere;
+    position: relative;
+    z-index: 1;
 }
 
 .blessing-text {
@@ -956,12 +960,12 @@ button:focus-visible,
     .state-placeholder {
         color: #A9A9B8;
     }
+}
 
-    /* 深色模式下吸底操作区使用深色渐变，避免亮色突兀 */
-    @media (max-width: 599px) {
-        .result-actions.is-sticky {
-            background: linear-gradient(to top, rgba(31, 27, 36, 0.98) 60%, rgba(31, 27, 36, 0));
-        }
+/* 深色模式下移动端吸底操作区使用深色渐变，避免亮色突兀（独立媒体查询，避免嵌套失效） */
+@media (prefers-color-scheme: dark) and (max-width: 599px) {
+    .result-actions.is-sticky {
+        background: linear-gradient(to top, rgba(31, 27, 36, 0.98) 60%, rgba(31, 27, 36, 0));
     }
 }
 
