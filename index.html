@@ -106,7 +106,7 @@
 
         .visually-hidden:focus{position:static;width:auto;height:auto;clip:auto;white-space:normal;}
 
-        /* 新增：日期信息补充与卡片聚焦 */
+        /* 日期信息补充与卡片聚焦 */
         .birthday-extra{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
         .birthday-extra .meta-tag{background:rgba(255,193,7,.14);color:#8a6b1f;}
         .card-stage:focus-visible{outline:2px solid #ff6b9d;outline-offset:4px;border-radius:16px;}
@@ -114,6 +114,25 @@
         .card-container:focus-visible{outline:2px solid #ff6b9d;outline-offset:4px;border-radius:16px;}
         .app-footer-text{margin:24px 0 0;text-align:center;font-size:13px;color:#9a7a86;}
         .card-actions .btn[disabled]{opacity:.5;cursor:not-allowed;}
+
+        /* 日期摘要卡：选中后即时反馈 */
+        .date-summary{display:flex;align-items:center;gap:12px;margin-top:12px;padding:12px 14px;border-radius:14px;background:linear-gradient(135deg,rgba(255,107,157,.1),rgba(255,193,7,.1));border:1px solid rgba(255,107,157,.18);}
+        .date-summary[hidden]{display:none;}
+        .date-summary-icon{flex:0 0 auto;width:44px;height:44px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;background:#fff;color:#ff6b9d;font-size:20px;box-shadow:0 2px 8px rgba(255,107,157,.18);}
+        .date-summary-body{flex:1 1 auto;min-width:0;}
+        .date-summary-title{margin:0;font-size:15px;font-weight:600;color:#7a4358;}
+        .date-summary-sub{margin:2px 0 0;font-size:13px;color:#9a7a86;}
+
+        /* 卡片操作按钮在小屏下更易点按 */
+        @media (max-width:520px){
+            .card-actions .btn{flex:1 1 100%;}
+            .card-actions{padding-bottom:4px;}
+        }
+
+        /* 减少动效偏好 */
+        @media (prefers-reduced-motion: reduce){
+            *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;scroll-behavior:auto !important;}
+        }
     </style>
 </head>
 <body>
@@ -209,6 +228,16 @@
                     <span id="season-text"></span>
                 </span>
             </div>
+
+            <!-- 日期摘要卡：选择后即时反馈，提升移动端确认感 -->
+            <div id="date-summary" class="date-summary" hidden aria-live="polite" aria-atomic="true">
+                <span class="date-summary-icon" aria-hidden="true"><i class="fa fa-calendar-check-o"></i></span>
+                <div class="date-summary-body">
+                    <p id="date-summary-title" class="date-summary-title">已选择日期</p>
+                    <p id="date-summary-sub" class="date-summary-sub">点击下方按钮生成专属祝福</p>
+                </div>
+            </div>
+
             <p id="birthday-error" class="birthday-error" role="alert" hidden></p>
             <p id="birthday-preview" class="birthday-preview is-empty" aria-live="polite" aria-atomic="true">
                 尚未选择日期
