@@ -710,6 +710,95 @@ button:focus-visible,
     margin: 0 auto 14px;
 }
 
+/* 快速选择：常用日期快捷键，减少滚轮操作成本 */
+.quick-picks {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 4px 0 18px;
+}
+
+.quick-picks-label {
+    font-size: 0.8rem;
+    color: var(--gray);
+    letter-spacing: 0.04em;
+}
+
+.quick-pick {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(107, 159, 255, 0.35);
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--secondary);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+    -webkit-appearance: none;
+    appearance: none;
+    touch-action: manipulation;
+    font-variant-numeric: tabular-nums;
+}
+
+.quick-pick:hover {
+    background: rgba(107, 159, 255, 0.12);
+    border-color: rgba(107, 159, 255, 0.6);
+}
+
+.quick-pick:active {
+    transform: scale(0.96);
+}
+
+.quick-pick.is-active {
+    background: linear-gradient(135deg, var(--secondary), #8FB6FF);
+    border-color: transparent;
+    color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(107, 159, 255, 0.32);
+}
+
+/* 选择器操作行：确认与重置并排，移动端拇指可达 */
+.picker-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.picker-actions .btn {
+    flex: 1 1 0;
+}
+
+/* 顶部提示条：用于轻量反馈（如已复制、日期已更新） */
+.toast {
+    position: fixed;
+    left: 50%;
+    bottom: max(24px, env(safe-area-inset-bottom));
+    transform: translate(-50%, 20px);
+    z-index: 50;
+    max-width: min(90vw, 360px);
+    padding: 12px 20px;
+    border-radius: 999px;
+    background: rgba(51, 51, 51, 0.92);
+    color: #FFFFFF;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+}
+
 /* 减少动画偏好：尊重系统设置 */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -735,6 +824,10 @@ button:focus-visible,
 
     .result-actions > * {
         animation: none !important;
+    }
+
+    .toast {
+        transition: opacity 0.01ms !important;
     }
 }
 
@@ -769,6 +862,15 @@ button:focus-visible,
     .btn-ghost {
         border-style: solid;
         border-color: var(--gray-dark);
+    }
+
+    .quick-pick {
+        border-color: var(--secondary);
+        color: #2F5BB7;
+    }
+
+    .quick-pick.is-active {
+        color: #FFFFFF;
     }
 }
 
@@ -811,6 +913,11 @@ button:focus-visible,
 
     .date-summary {
         font-size: 0.88rem;
+    }
+
+    .quick-pick {
+        padding: 6px 12px;
+        font-size: 0.8rem;
     }
 }
 
@@ -867,6 +974,10 @@ button:focus-visible,
     .result-actions .btn {
         flex: 1 1 40%;
     }
+
+    .quick-picks {
+        margin-bottom: 12px;
+    }
 }
 
 /* 大屏与平板：结果按钮横向排列，卡片留白更舒展 */
@@ -902,6 +1013,16 @@ button:focus-visible,
 
     .btn-secondary:hover {
         box-shadow: 0 4px 12px rgba(107, 159, 255, 0.18);
+    }
+
+    .quick-pick:hover {
+        background: rgba(255, 255, 255, 0.85);
+        border-color: rgba(107, 159, 255, 0.35);
+    }
+
+    .quick-pick.is-active:hover {
+        background: linear-gradient(135deg, var(--secondary), #8FB6FF);
+        border-color: transparent;
     }
 }
 
@@ -960,6 +1081,23 @@ button:focus-visible,
     .state-placeholder {
         color: #A9A9B8;
     }
+
+    .quick-pick {
+        background: rgba(42, 39, 51, 0.9);
+        border-color: rgba(157, 187, 255, 0.35);
+        color: #9DBBFF;
+    }
+
+    .quick-pick.is-active {
+        background: linear-gradient(135deg, #4A7BE0, #6B9FFF);
+        border-color: transparent;
+        color: #FFFFFF;
+    }
+
+    .toast {
+        background: rgba(216, 216, 224, 0.94);
+        color: #1F1B24;
+    }
 }
 
 /* 深色模式下移动端吸底操作区使用深色渐变，避免亮色突兀（独立媒体查询，避免嵌套失效） */
@@ -977,7 +1115,10 @@ button:focus-visible,
     .result-actions,
     .wheel-container,
     .date-hint,
-    .blessing-ribbon {
+    .blessing-ribbon,
+    .quick-picks,
+    .picker-actions,
+    .toast {
         display: none !important;
     }
 
