@@ -79,6 +79,7 @@ body::after {
     --wheel-item-height: 56px;
     --wheel-visible-items: 5;
     --wheel-width: 80px;
+    color-scheme: light dark;
 }
 
 /* 核心动画效果 */
@@ -667,6 +668,28 @@ button:focus-visible,
     border: 0;
 }
 
+/* 跳转链接：键盘用户可快速跳过装饰直达主内容 */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 10px 20px;
+    border-radius: 0 0 12px 12px;
+    background: var(--secondary);
+    color: #FFFFFF;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 0;
+    box-shadow: var(--focus-ring);
+}
+
 /* 空态与加载态：避免内容区域突然塌陷 */
 .state-placeholder {
     display: flex;
@@ -872,6 +895,10 @@ button:focus-visible,
 
     .quick-pick.is-active {
         color: #FFFFFF;
+    }
+
+    .skip-link {
+        background: #2F5BB7;
     }
 }
 
@@ -1099,6 +1126,10 @@ button:focus-visible,
         background: rgba(216, 216, 224, 0.94);
         color: #1F1B24;
     }
+
+    .skip-link {
+        background: #4A7BE0;
+    }
 }
 
 /* 深色模式下移动端吸底操作区使用深色渐变，避免亮色突兀（独立媒体查询，避免嵌套失效） */
@@ -1119,7 +1150,8 @@ button:focus-visible,
     .blessing-ribbon,
     .quick-picks,
     .picker-actions,
-    .toast {
+    .toast,
+    .skip-link {
         display: none !important;
     }
 
