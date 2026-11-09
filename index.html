@@ -163,6 +163,48 @@
         /* 新增：卡片状态与提示的紧凑布局 */
         .card-section{scroll-margin-top:16px;}
         #birthday-section{scroll-margin-top:16px;}
+
+        /* 新增：日历网格（替代原生日期控件，移动端更友好） */
+        .calendar{margin-top:12px;padding:12px 10px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid rgba(255,107,157,.18);}
+        .calendar[hidden]{display:none;}
+        .calendar-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;}
+        .calendar-title{font-size:14px;font-weight:600;color:#b8436f;}
+        .calendar-nav{display:inline-flex;gap:6px;}
+        .calendar-nav .btn{min-height:36px;min-width:36px;padding:0 10px;}
+        .calendar-weekdays,.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+        .calendar-weekdays{margin-bottom:4px;}
+        .calendar-weekday{text-align:center;font-size:11px;color:#9a7a86;padding:2px 0;}
+        .calendar-day{position:relative;display:flex;align-items:center;justify-content:center;min-height:40px;border-radius:10px;border:1px solid transparent;background:transparent;color:#5a3d48;font-size:14px;font-family:inherit;cursor:pointer;touch-action:manipulation;transition:background .15s ease,border-color .15s ease;}
+        .calendar-day:hover{background:rgba(255,107,157,.1);}
+        .calendar-day:focus-visible{outline:2px solid #ff6b9d;outline-offset:1px;}
+        .calendar-day.is-outside{color:#c9b4bd;}
+        .calendar-day.is-today{border-color:rgba(255,107,157,.5);font-weight:600;}
+        .calendar-day.is-selected{background:#ff6b9d;color:#fff;border-color:#ff6b9d;font-weight:600;}
+        .calendar-day.is-selected.is-today{box-shadow:0 0 0 2px rgba(255,107,157,.25);}
+        .calendar-day:disabled{opacity:.35;cursor:not-allowed;}
+        .calendar-day[aria-current="date"]::after{content:"";position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:currentColor;opacity:.7;}
+        @media (prefers-reduced-motion: reduce){.calendar-day{transition:none;}}
+        @media (max-width:360px){.calendar-day{min-height:36px;font-size:13px;}}
+
+        /* 新增：视图切换（日历 / 原生输入） */
+        .view-toggle{display:inline-flex;gap:6px;margin-top:10px;}
+        .view-toggle .btn{min-height:40px;flex:1 1 auto;justify-content:center;}
+        .view-toggle .btn[aria-pressed="true"]{border-color:#ff6b9d;background:rgba(255,107,157,.14);color:#b8436f;}
+
+        /* 新增：祝福卡片视觉层次 */
+        .card-container .birthday-card{position:relative;overflow:hidden;border-radius:18px;padding:26px 20px;background:linear-gradient(150deg,#fff 0%,#fff6fa 55%,#fff9ec 100%);border:1px solid rgba(255,107,157,.22);box-shadow:0 10px 30px rgba(255,107,157,.14);}
+        .card-container .birthday-card::before{content:"";position:absolute;top:-40px;right:-40px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(255,193,7,.28),transparent 70%);pointer-events:none;}
+        .card-container .birthday-card::after{content:"";position:absolute;bottom:-50px;left:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,rgba(255,107,157,.18),transparent 70%);pointer-events:none;}
+        .card-container .birthday-card > *{position:relative;z-index:1;}
+        .card-container .birthday-card h3{margin:0 0 10px;font-size:19px;color:#b8436f;}
+        .card-container .birthday-card p{margin:0 0 8px;color:#5a3d48;font-size:15px;}
+        .card-container .birthday-card p:last-child{margin-bottom:0;}
+        .card-container .birthday-card .card-sign{display:block;margin-top:14px;font-size:13px;color:#9a7a86;text-align:right;}
+
+        /* 新增：装饰元素在卡片生成后淡出，减少视觉噪音 */
+        .app-decor{transition:opacity .4s ease;}
+        .app.has-card .app-decor{opacity:.5;}
+        @media (prefers-reduced-motion: reduce){.app-decor{transition:none;}}
     </style>
 </head>
 <body>
@@ -192,36 +234,68 @@
                 选择生日日期
                 <span class="birthday-required" aria-hidden="true">*</span>
             </label>
-            <div class="input-wrap">
-                <input
-                    id="birthday-input"
-                    class="birthday-input"
-                    type="date"
-                    name="birthday"
-                    min="1900-01-01"
-                    max="2100-12-31"
-                    required
-                    aria-describedby="birthday-hint birthday-preview birthday-error"
-                    aria-invalid="false"
-                    autocomplete="bday"
-                    inputmode="numeric"
-                    placeholder="年 / 月 / 日"
-                >
-                <button id="input-clear-btn" class="input-clear" type="button" aria-label="清除已选日期" title="清除日期" hidden>
-                    <i class="fa fa-times" aria-hidden="true"></i>
-                </button>
-            </div>
-            <p id="birthday-hint" class="birthday-hint">支持移动端日期选择，选好后即可生成祝福卡片。</p>
 
-            <div class="month-bar" role="group" aria-label="按月浏览日期">
-                <button id="prev-month-btn" class="btn btn-ghost" type="button" aria-label="切换到上一个月">
-                    <i class="fa fa-chevron-left" aria-hidden="true"></i>
+            <div class="view-toggle" role="group" aria-label="日期选择方式">
+                <button id="view-calendar-btn" class="btn btn-ghost" type="button" aria-pressed="true" aria-controls="calendar-panel">
+                    <i class="fa fa-calendar" aria-hidden="true"></i> 日历选择
                 </button>
-                <span id="month-bar-label" class="month-bar-label" aria-live="polite">本月</span>
-                <button id="month-step-next-btn" class="btn btn-ghost" type="button" aria-label="切换到下一个月">
-                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                <button id="view-input-btn" class="btn btn-ghost" type="button" aria-pressed="false" aria-controls="input-panel">
+                    <i class="fa fa-keyboard-o" aria-hidden="true"></i> 手动输入
                 </button>
             </div>
+
+            <!-- 日历面板：移动端更易点按的日期选择 -->
+            <div id="calendar-panel" class="calendar" aria-label="日期日历" role="group">
+                <div class="calendar-head">
+                    <span id="calendar-title" class="calendar-title" aria-live="polite">本月</span>
+                    <span class="calendar-nav">
+                        <button id="calendar-prev-btn" class="btn btn-ghost" type="button" aria-label="上一个月">
+                            <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        </button>
+                        <button id="calendar-today-btn" class="btn btn-ghost" type="button" aria-label="回到本月">
+                            <i class="fa fa-dot-circle-o" aria-hidden="true"></i>
+                        </button>
+                        <button id="calendar-next-btn" class="btn btn-ghost" type="button" aria-label="下一个月">
+                            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                        </button>
+                    </span>
+                </div>
+                <div class="calendar-weekdays" aria-hidden="true">
+                    <span class="calendar-weekday">日</span>
+                    <span class="calendar-weekday">一</span>
+                    <span class="calendar-weekday">二</span>
+                    <span class="calendar-weekday">三</span>
+                    <span class="calendar-weekday">四</span>
+                    <span class="calendar-weekday">五</span>
+                    <span class="calendar-weekday">六</span>
+                </div>
+                <div id="calendar-grid" class="calendar-grid" role="grid" aria-labelledby="calendar-title"></div>
+            </div>
+
+            <!-- 原生输入面板 -->
+            <div id="input-panel" class="input-panel" hidden>
+                <div class="input-wrap">
+                    <input
+                        id="birthday-input"
+                        class="birthday-input"
+                        type="date"
+                        name="birthday"
+                        min="1900-01-01"
+                        max="2100-12-31"
+                        required
+                        aria-describedby="birthday-hint birthday-preview birthday-error"
+                        aria-invalid="false"
+                        autocomplete="bday"
+                        inputmode="numeric"
+                        placeholder="年 / 月 / 日"
+                    >
+                    <button id="input-clear-btn" class="input-clear" type="button" aria-label="清除已选日期" title="清除日期" hidden>
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <p id="birthday-hint" class="birthday-hint">点击日历中的日期即可选择，也可以切换到手动输入。</p>
 
             <div class="chip-row quick-picks" role="group" aria-label="快捷日期选择">
                 <button id="today-btn" class="btn btn-ghost" type="button" aria-label="选择今天的日期" aria-pressed="false">
