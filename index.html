@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
@@ -223,6 +224,32 @@
         .birthday-error:not([hidden]){animation:error-nudge .3s ease;}
         @keyframes error-nudge{0%{transform:translateX(-2px);}50%{transform:translateX(2px);}100%{transform:translateX(0);}}
         @media (prefers-reduced-motion: reduce){.birthday-error:not([hidden]){animation:none;}}
+
+        /* 新增：输入面板 */
+        .input-panel[hidden]{display:none;}
+        .input-panel{margin-top:12px;}
+
+        /* 新增：日历面板隐藏态 */
+        .calendar[hidden]{display:none;}
+
+        /* 新增：年份快速跳转 */
+        .year-jump{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13px;color:#8a5a6c;}
+        .year-jump label{flex:0 0 auto;}
+        .year-jump select{flex:1 1 auto;min-height:40px;border-radius:10px;border:1px solid rgba(255,107,157,.3);background:#fff;color:#5a3d48;font-family:inherit;font-size:15px;padding:0 10px;touch-action:manipulation;}
+        .year-jump select:focus-visible{outline:2px solid #ff6b9d;outline-offset:2px;}
+
+        /* 新增：卡片内日期徽标 */
+        .card-date-badge{display:inline-flex;align-items:center;gap:6px;margin-bottom:12px;padding:4px 12px;border-radius:999px;background:rgba(255,107,157,.12);color:#b8436f;font-size:13px;font-weight:600;}
+
+        /* 新增：卡片动画（生成时） */
+        .card-container.is-entering .birthday-card{animation:card-enter .5s cubic-bezier(.22,.61,.36,1);}
+        @keyframes card-enter{0%{opacity:0;transform:translateY(14px) scale(.98);}100%{opacity:1;transform:translateY(0) scale(1);}}
+        @media (prefers-reduced-motion: reduce){.card-container.is-entering .birthday-card{animation:none;}}
+
+        /* 新增：页脚返回顶部 */
+        .back-to-top{display:block;margin:16px auto 0;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(255,107,157,.3);background:rgba(255,255,255,.8);color:#b8436f;font-family:inherit;font-size:13px;cursor:pointer;touch-action:manipulation;}
+        .back-to-top:focus-visible{outline:2px solid #ff6b9d;outline-offset:2px;}
+        .back-to-top[hidden]{display:none;}
     </style>
 </head>
 <body>
@@ -288,6 +315,12 @@
                     <span class="calendar-weekday">六</span>
                 </div>
                 <div id="calendar-grid" class="calendar-grid" role="grid" aria-labelledby="calendar-title"></div>
+                <div class="year-jump">
+                    <label for="year-select">快速跳转年份</label>
+                    <select id="year-select" aria-label="选择年份">
+                        <!-- 由脚本填充 -->
+                    </select>
+                </div>
                 <p class="calendar-help" id="calendar-help">使用方向键在日期之间移动，按回车或空格选择日期。</p>
             </div>
 
@@ -385,45 +418,4 @@
                 <!-- 祝福卡片由脚本渲染，以下为不同阶段的占位内容 -->
                 <div class="card-placeholder" id="card-placeholder">
                     <i class="fa fa-gift card-placeholder-icon" aria-hidden="true"></i>
-                    <p class="card-placeholder-text">还没有祝福卡片，先选择日期吧～</p>
-                </div>
-                <div class="card-skeleton" id="card-skeleton" hidden aria-hidden="true">
-                    <div class="card-skeleton-line"></div>
-                    <div class="card-skeleton-line"></div>
-                    <div class="card-skeleton-line"></div>
-                </div>
-                <div id="card-container" class="card-container" hidden tabindex="-1"></div>
-            </div>
-        </section>
-
-        <div id="card-actions" class="card-actions" role="group" aria-label="祝福卡片操作" hidden>
-            <button id="regenerate-btn" class="btn btn-ghost" type="button" aria-label="重新生成祝福卡片">
-                <i class="fa fa-refresh" aria-hidden="true"></i> 换一句祝福
-            </button>
-            <button id="copy-btn" class="btn btn-ghost" type="button" aria-label="复制当前祝福文字">
-                <i class="fa fa-copy" aria-hidden="true"></i> 复制祝福
-            </button>
-            <button id="pick-again-btn" class="btn btn-ghost" type="button" aria-label="返回并重新选择日期">
-                <i class="fa fa-pencil" aria-hidden="true"></i> 重新选日期
-            </button>
-        </div>
-        <p id="share-tip" class="share-tip" role="status" aria-live="polite" hidden></p>
-        <footer class="app-footer">
-            <p class="app-footer-text">愿每一天都有值得庆祝的小确幸</p>
-            <p class="app-footer-note">所有信息仅在本机处理，不会上传服务器。</p>
-        </footer>
-    </main>
-
-    <!-- 移动端悬浮操作栏：无需滚动即可快速操作 -->
-    <div id="mobile-action-bar" class="mobile-action-bar" role="group" aria-label="快捷操作" hidden>
-        <button id="mobile-generate-btn" class="btn btn-primary" type="button" aria-label="生成生日祝福卡片">
-            <i class="fa fa-magic" aria-hidden="true"></i> 生成祝福
-        </button>
-        <button id="mobile-copy-btn" class="btn btn-ghost" type="button" aria-label="复制当前祝福文字" hidden>
-            <i class="fa fa-copy" aria-hidden="true"></i> 复制
-        </button>
-    </div>
-
-    <script src="index.js" defer></script>
-</body>
-</html>
+                    <p class="card-place
