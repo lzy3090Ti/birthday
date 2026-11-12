@@ -2,21 +2,29 @@
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zack Li · Personal Homepage</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#fdf2f8" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1f1720" media="(prefers-color-scheme: dark)">
+  <meta name="description" content="Zack Li 的个人主页：喜欢把想法做成简单、实用的产品，关注效率工具与自动化。">
+  <title>Zack Li · 个人主页</title>
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
-  <main class="page">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+
+  <main class="page" id="main">
     <header class="hero">
-      <p class="eyebrow">Personal Website</p>
+      <p class="eyebrow">个人主页</p>
       <h1>Zack Li</h1>
       <p class="lead">喜欢把想法做成简单、实用的产品，也关注效率工具和自动化。</p>
-      <a class="button" href="mailto:lzylzylzy5200@163.com">联系我</a>
+      <div class="hero-actions">
+        <a class="button" href="mailto:lzylzylzy5200@163.com">联系我</a>
+        <a class="button button-ghost" href="#about">了解更多</a>
+      </div>
     </header>
 
-    <section class="grid">
-      <article class="card">
+    <section class="grid" aria-labelledby="about">
+      <article class="card" id="about">
         <h2>关于我</h2>
         <p>一个持续学习和构建的人。平时主要写 Python、前端和自动化脚本。</p>
       </article>
@@ -26,9 +34,22 @@
       </article>
       <article class="card">
         <h2>联系</h2>
-        <p>邮箱：lzylzylzy5200@163.com</p>
+        <p>邮箱：<a class="link" href="mailto:lzylzylzy5200@163.com">lzylzylzy5200@163.com</a></p>
       </article>
     </section>
+
+    <footer class="footer">
+      <p>© <span id="year">2024</span> Zack Li · 用心做简单的事</p>
+    </footer>
   </main>
+
+  <script>
+    (function () {
+      var year = document.getElementById('year');
+      if (year) {
+        year.textContent = String(new Date().getFullYear());
+      }
+    })();
+  </script>
 </body>
 </html>
