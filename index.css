@@ -850,6 +850,42 @@ button:focus-visible,
     transform: translate(-50%, 0);
 }
 
+/* 祝福卡片内联操作提示：移动端小屏可一行放不下时换行 */
+.blessing-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    position: relative;
+    z-index: 1;
+}
+
+/* 结果页头部信息条：展示"为谁祝福"，增强个性化 */
+.result-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.result-header .result-name {
+    font-size: 1.05rem;
+    font-weight: bold;
+    color: var(--secondary);
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.result-header .result-sub {
+    font-size: 0.82rem;
+    color: var(--gray);
+    line-height: 1.5;
+}
+
 /* 减少动画偏好：尊重系统设置 */
 @media (prefers-reduced-motion: reduce) {
     *,
@@ -899,7 +935,8 @@ button:focus-visible,
     .date-hint,
     .blessing-sign,
     .blessing-tip,
-    .date-summary.is-empty {
+    .date-summary.is-empty,
+    .result-header .result-sub {
         color: #555555;
     }
 
@@ -974,6 +1011,10 @@ button:focus-visible,
     .quick-pick {
         padding: 6px 12px;
         font-size: 0.8rem;
+    }
+
+    .result-header .result-name {
+        font-size: 1rem;
     }
 }
 
@@ -1108,7 +1149,8 @@ button:focus-visible,
     .date-summary.is-empty,
     .date-hint,
     .blessing-sign,
-    .blessing-tip {
+    .blessing-tip,
+    .result-header .result-sub {
         color: #A9A9B8;
     }
 
@@ -1141,34 +1183,4 @@ button:focus-visible,
 
     .quick-pick {
         background: rgba(42, 39, 51, 0.9);
-        border-color: rgba(157, 187, 255, 0.35);
-        color: #9DBBFF;
-    }
-
-    .quick-pick.is-active {
-        background: linear-gradient(135deg, #4A7BE0, #6B9FFF);
-        border-color: transparent;
-        color: #FFFFFF;
-    }
-
-    .toast {
-        background: rgba(216, 216, 224, 0.94);
-        color: #1F1B24;
-    }
-
-    .skip-link {
-        background: #4A7BE0;
-    }
-
-    /* 深色模式标题渐变，避免透明文字在暗底上对比不足 */
-    .main-title {
-        background: linear-gradient(120deg, #FF8FA8 0%, #FFB3C6 45%, #9DBBFF 100%);
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: none;
-    }
-}
-
-/* 深色模式下移动端吸底操作区使用深色渐变，避免亮色突兀（独立媒体查询，避免嵌套失效） */
-@media (prefers-color-scheme: dark)
+        border-color: rgba(157, 187, 255
