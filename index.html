@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#fdf2f8" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#1f1720" media="(prefers-color-scheme: dark)">
-  <meta name="description" content="Zack Li 的个人主页：喜欢把想法做成简单、实用的产品，关注效率工具与自动化。">
-  <title>Zack Li · 个人主页</title>
+  <meta name="description" content="生日祝福页面：为 TA 挑选日期，生成一张专属的祝福卡片，附上温暖的中文祝词与轻量动画。">
+  <title>生日祝福 · 为 TA 送上一份心意</title>
   <link rel="stylesheet" href="index.css">
 </head>
 <body>
@@ -14,32 +14,68 @@
 
   <main class="page" id="main">
     <header class="hero">
-      <p class="eyebrow">个人主页</p>
-      <h1>Zack Li</h1>
-      <p class="lead">喜欢把想法做成简单、实用的产品，也关注效率工具和自动化。</p>
-      <div class="hero-actions">
-        <a class="button" href="mailto:lzylzylzy5200@163.com">联系我</a>
-        <a class="button button-ghost" href="#about">了解更多</a>
-      </div>
+      <p class="eyebrow">生日祝福</p>
+      <h1>为 TA 送上一份心意</h1>
+      <p class="lead">选一个生日日期，写下名字，就能生成一张温暖的祝福卡片。</p>
     </header>
 
-    <section class="grid" aria-labelledby="about">
-      <article class="card" id="about">
-        <h2>关于我</h2>
-        <p>一个持续学习和构建的人。平时主要写 Python、前端和自动化脚本。</p>
+    <section class="panel" aria-labelledby="form-title">
+      <h2 id="form-title" class="panel-title">定制祝福</h2>
+      <form class="form" id="wish-form" novalidate>
+        <div class="field">
+          <label class="label" for="name-input">TA 的名字</label>
+          <input
+            class="input"
+            id="name-input"
+            name="name"
+            type="text"
+            maxlength="20"
+            autocomplete="off"
+            placeholder="例如：小满"
+            aria-describedby="name-hint">
+          <p class="hint" id="name-hint">最多 20 个字，留空则显示“你”。</p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="date-input">生日日期</label>
+          <input
+            class="input"
+            id="date-input"
+            name="birthday"
+            type="date"
+            aria-describedby="date-hint">
+          <p class="hint" id="date-hint">选择日期后，会显示距离生日的天数。</p>
+        </div>
+
+        <div class="actions">
+          <button class="button" type="submit">生成祝福</button>
+          <button class="button button-ghost" type="button" id="reset-btn">重置</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card-area" aria-live="polite" aria-atomic="true">
+      <article class="card" id="wish-card">
+        <p class="card-eyebrow">生日祝福卡片</p>
+        <h2 class="card-title" id="card-title">祝你生日快乐</h2>
+        <p class="card-text" id="card-text">愿你的每一天都被温柔以待，愿望都能慢慢实现。</p>
+        <p class="card-meta" id="card-meta"></p>
       </article>
-      <article class="card">
-        <h2>在做的事</h2>
-        <p>个人项目、自动化工作流、AI 工具，以及一些轻量网页应用。</p>
+    </section>
+
+    <section class="grid" aria-labelledby="tips-title">
+      <article class="card card-soft">
+        <h2 id="tips-title">如何送出祝福</h2>
+        <p>填写名字和日期，点击“生成祝福”，再把卡片内容复制发给 TA。</p>
       </article>
-      <article class="card">
-        <h2>联系</h2>
-        <p>邮箱：<a class="link" href="mailto:lzylzylzy5200@163.com">lzylzylzy5200@163.com</a></p>
+      <article class="card card-soft">
+        <h2>小提示</h2>
+        <p>日期只用于计算天数和展示，不会上传到任何服务器。</p>
       </article>
     </section>
 
     <footer class="footer">
-      <p>© <span id="year">2024</span> Zack Li · 用心做简单的事</p>
+      <p>© <span id="year">2024</span> 生日祝福 · 用心做简单的事</p>
     </footer>
   </main>
 
@@ -48,6 +84,92 @@
       var year = document.getElementById('year');
       if (year) {
         year.textContent = String(new Date().getFullYear());
+      }
+
+      var form = document.getElementById('wish-form');
+      var nameInput = document.getElementById('name-input');
+      var dateInput = document.getElementById('date-input');
+      var resetBtn = document.getElementById('reset-btn');
+      var cardTitle = document.getElementById('card-title');
+      var cardText = document.getElementById('card-text');
+      var cardMeta = document.getElementById('card-meta');
+      var wishCard = document.getElementById('wish-card');
+
+      var wishes = [
+        '愿你的每一天都被温柔以待，愿望都能慢慢实现。',
+        '愿新的一岁里，喜欢的事都顺利，想见的人都在身边。',
+        '愿你被生活偏爱，被时光温柔，笑容常在。',
+        '愿所有努力都有回响，所有期待都不落空。'
+      ];
+
+      function pad(n) {
+        return n < 10 ? '0' + n : String(n);
+      }
+
+      function daysUntilBirthday(dateStr) {
+        if (!dateStr) return null;
+        var parts = dateStr.split('-');
+        if (parts.length !== 3) return null;
+        var month = parseInt(parts[1], 10);
+        var day = parseInt(parts[2], 10);
+        if (!month || !day) return null;
+
+        var now = new Date();
+        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        var next = new Date(now.getFullYear(), month - 1, day);
+        if (next < today) {
+          next = new Date(now.getFullYear() + 1, month - 1, day);
+        }
+        var diff = Math.round((next - today) / 86400000);
+        return { days: diff, date: next };
+      }
+
+      function render() {
+        var name = (nameInput.value || '').trim();
+        var displayName = name || '你';
+        var dateStr = dateInput.value;
+        var info = daysUntilBirthday(dateStr);
+
+        cardTitle.textContent = '祝' + displayName + '生日快乐';
+
+        var wish = wishes[Math.floor(Math.random() * wishes.length)];
+        cardText.textContent = wish;
+
+        if (info) {
+          var dateLabel = info.date.getFullYear() + ' 年 ' + (info.date.getMonth() + 1) + ' 月 ' + info.date.getDate() + ' 日';
+          if (info.days === 0) {
+            cardMeta.textContent = '就是今天！' + dateLabel;
+          } else {
+            cardMeta.textContent = '距离下次生日还有 ' + info.days + ' 天 · ' + dateLabel;
+          }
+        } else {
+          cardMeta.textContent = '填写日期后，会显示距离生日的天数。';
+        }
+
+        wishCard.classList.remove('is-pop');
+        // 触发重排以重启动画
+        void wishCard.offsetWidth;
+        wishCard.classList.add('is-pop');
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        render();
+      });
+
+      resetBtn.addEventListener('click', function () {
+        nameInput.value = '';
+        dateInput.value = '';
+        cardTitle.textContent = '祝你生日快乐';
+        cardText.textContent = '愿你的每一天都被温柔以待，愿望都能慢慢实现。';
+        cardMeta.textContent = '';
+        wishCard.classList.remove('is-pop');
+        nameInput.focus();
+      });
+
+      // 默认聚焦名字输入，提升移动端体验
+      if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+        nameInput.focus();
       }
     })();
   </script>
