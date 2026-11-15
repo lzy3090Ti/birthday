@@ -31,6 +31,7 @@
             type="text"
             maxlength="20"
             autocomplete="off"
+            enterkeyhint="next"
             placeholder="例如：小满"
             aria-describedby="name-hint">
           <p class="hint" id="name-hint">最多 20 个字，留空则显示“你”。</p>
@@ -43,6 +44,7 @@
             id="date-input"
             name="birthday"
             type="date"
+            enterkeyhint="done"
             aria-describedby="date-hint">
           <p class="hint" id="date-hint">选择日期后，会显示距离生日的天数。</p>
         </div>
@@ -55,11 +57,15 @@
     </section>
 
     <section class="card-area" aria-live="polite" aria-atomic="true">
-      <article class="card" id="wish-card">
+      <article class="card" id="wish-card" tabindex="-1">
         <p class="card-eyebrow">生日祝福卡片</p>
         <h2 class="card-title" id="card-title">祝你生日快乐</h2>
         <p class="card-text" id="card-text">愿你的每一天都被温柔以待，愿望都能慢慢实现。</p>
-        <p class="card-meta" id="card-meta"></p>
+        <p class="card-meta" id="card-meta">填写日期后，会显示距离生日的天数。</p>
+        <div class="card-actions">
+          <button class="button button-ghost" type="button" id="copy-btn">复制祝福文字</button>
+          <span class="copy-status" id="copy-status" role="status" aria-live="polite"></span>
+        </div>
       </article>
     </section>
 
@@ -81,6 +87,8 @@
 
   <script>
     (function () {
+      'use strict';
+
       var year = document.getElementById('year');
       if (year) {
         year.textContent = String(new Date().getFullYear());
@@ -90,20 +98,34 @@
       var nameInput = document.getElementById('name-input');
       var dateInput = document.getElementById('date-input');
       var resetBtn = document.getElementById('reset-btn');
+      var copyBtn = document.getElementById('copy-btn');
+      var copyStatus = document.getElementById('copy-status');
       var cardTitle = document.getElementById('card-title');
       var cardText = document.getElementById('card-text');
       var cardMeta = document.getElementById('card-meta');
       var wishCard = document.getElementById('wish-card');
 
+      var DEFAULT_WISH = '愿你的每一天都被温柔以待，愿望都能慢慢实现。';
+
       var wishes = [
         '愿你的每一天都被温柔以待，愿望都能慢慢实现。',
         '愿新的一岁里，喜欢的事都顺利，想见的人都在身边。',
         '愿你被生活偏爱，被时光温柔，笑容常在。',
-        '愿所有努力都有回响，所有期待都不落空。'
+        '愿所有努力都有回响，所有期待都不落空。',
+        '愿你的世界永远明亮，愿你的热爱永不降温。',
+        '愿新的一岁，多喜乐，长安宁，所求皆如愿。'
       ];
+
+      var reduceMotion = window.matchMedia &&
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       function pad(n) {
         return n < 10 ? '0' + n : String(n);
+      }
+
+      function todayStart() {
+        var now = new Date();
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate());
       }
 
       function daysUntilBirthday(dateStr) {
@@ -114,14 +136,44 @@
         var day = parseInt(parts[2], 10);
         if (!month || !day) return null;
 
-        var now = new Date();
-        var today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        var next = new Date(now.getFullYear(), month - 1, day);
+        var today = todayStart();
+        var next = new Date(today.getFullYear(), month - 1, day);
         if (next < today) {
-          next = new Date(now.getFullYear() + 1, month - 1, day);
+          next = new Date(today.getFullYear() + 1, month - 1, day);
         }
         var diff = Math.round((next - today) / 86400000);
         return { days: diff, date: next };
+      }
+
+      function formatDate(d) {
+        return d.getFullYear() + ' 年 ' + (d.getMonth() + 1) + ' 月 ' + d.getDate() + ' 日';
+      }
+
+      function setMeta(info) {
+        if (info) {
+          var dateLabel = formatDate(info.date);
+          if (info.days === 0) {
+            cardMeta.textContent = '就是今天！' + dateLabel;
+            cardMeta.classList.add('is-today');
+          } else if (info.days === 1) {
+            cardMeta.textContent = '明天就是生日啦 · ' + dateLabel;
+            cardMeta.classList.remove('is-today');
+          } else {
+            cardMeta.textContent = '距离下次生日还有 ' + info.days + ' 天 · ' + dateLabel;
+            cardMeta.classList.remove('is-today');
+          }
+        } else {
+          cardMeta.textContent = '填写日期后，会显示距离生日的天数。';
+          cardMeta.classList.remove('is-today');
+        }
+      }
+
+      function restartPop() {
+        if (reduceMotion) return;
+        wishCard.classList.remove('is-pop');
+        // 触发重排以重启动画
+        void wishCard.offsetWidth;
+        wishCard.classList.add('is-pop');
       }
 
       function render() {
@@ -135,39 +187,82 @@
         var wish = wishes[Math.floor(Math.random() * wishes.length)];
         cardText.textContent = wish;
 
-        if (info) {
-          var dateLabel = info.date.getFullYear() + ' 年 ' + (info.date.getMonth() + 1) + ' 月 ' + info.date.getDate() + ' 日';
-          if (info.days === 0) {
-            cardMeta.textContent = '就是今天！' + dateLabel;
-          } else {
-            cardMeta.textContent = '距离下次生日还有 ' + info.days + ' 天 · ' + dateLabel;
-          }
-        } else {
-          cardMeta.textContent = '填写日期后，会显示距离生日的天数。';
-        }
+        setMeta(info);
+        restartPop();
+        clearCopyStatus();
+      }
 
-        wishCard.classList.remove('is-pop');
-        // 触发重排以重启动画
-        void wishCard.offsetWidth;
-        wishCard.classList.add('is-pop');
+      function clearCopyStatus() {
+        copyStatus.textContent = '';
+      }
+
+      var copyTimer = null;
+      function showCopyStatus(msg) {
+        copyStatus.textContent = msg;
+        if (copyTimer) clearTimeout(copyTimer);
+        copyTimer = setTimeout(clearCopyStatus, 2400);
+      }
+
+      function copyText(text) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          return navigator.clipboard.writeText(text);
+        }
+        return new Promise(function (resolve, reject) {
+          try {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '-1000px';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            var ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+            ok ? resolve() : reject(new Error('copy failed'));
+          } catch (err) {
+            reject(err);
+          }
+        });
       }
 
       form.addEventListener('submit', function (e) {
         e.preventDefault();
         render();
+        // 生成后把焦点移到卡片，方便读屏与键盘用户
+        wishCard.focus({ preventScroll: false });
       });
 
       resetBtn.addEventListener('click', function () {
         nameInput.value = '';
         dateInput.value = '';
         cardTitle.textContent = '祝你生日快乐';
-        cardText.textContent = '愿你的每一天都被温柔以待，愿望都能慢慢实现。';
-        cardMeta.textContent = '';
+        cardText.textContent = DEFAULT_WISH;
+        cardMeta.textContent = '填写日期后，会显示距离生日的天数。';
+        cardMeta.classList.remove('is-today');
         wishCard.classList.remove('is-pop');
+        clearCopyStatus();
         nameInput.focus();
       });
 
-      // 默认聚焦名字输入，提升移动端体验
+      copyBtn.addEventListener('click', function () {
+        var title = cardTitle.textContent;
+        var text = cardText.textContent;
+        var meta = cardMeta.textContent;
+        var payload = title + '\n' + text + (meta ? '\n' + meta : '');
+        copyText(payload).then(function () {
+          showCopyStatus('已复制，去发给 TA 吧');
+        }).catch(function () {
+          showCopyStatus('复制失败，请手动选择文字');
+        });
+      });
+
+      // 输入时实时更新天数提示，减少一次点击
+      dateInput.addEventListener('change', function () {
+        setMeta(daysUntilBirthday(dateInput.value));
+      });
+
+      // 默认聚焦名字输入，提升桌面端体验；移动端不主动弹键盘
       if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
         nameInput.focus();
       }
